@@ -71,7 +71,7 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen" style={{
-      background: 'linear-gradient(135deg, #800020 0%, #1e3a8a 50%, #800020 100%)',
+      background: 'linear-gradient(135deg, #0B3D2E 0%, #145A3A 50%, #0B3D2E 100%)',
       minHeight: '100vh'
     }}>
       <Navigation />
@@ -85,15 +85,15 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-balance" style={{
-              background: 'linear-gradient(135deg, #f4d03f 0%, #d4af37 100%)',
+              background: 'linear-gradient(135deg, #F28C28 0%, #E67E1D 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              textShadow: '0 4px 8px rgba(244, 208, 63, 0.3)',
+              textShadow: '0 4px 8px rgba(242, 140, 40, 0.3)',
               fontWeight: '900'
             }}>
               About Our Mission
               <span className="block" style={{
-                background: 'linear-gradient(135deg, #f4d03f 0%, #ffffff 100%)',
+                background: 'linear-gradient(135deg, #F28C28 0%, #ffffff 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
               }}>Transforming Tourism</span>
@@ -115,14 +115,14 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mb-16 lg:mb-20">
             <div className="p-6 lg:p-8 rounded-3xl" style={{
-              background: 'linear-gradient(135deg, rgba(244, 208, 63, 0.15) 0%, rgba(128, 0, 32, 0.15) 100%)',
+              background: 'linear-gradient(135deg, rgba(242, 140, 40, 0.15) 0%, rgba(11, 61, 46, 0.15) 100%)',
               backdropFilter: 'blur(20px)',
-              border: '2px solid rgba(244, 208, 63, 0.4)',
-              boxShadow: '0 8px 32px rgba(244, 208, 63, 0.3)'
+              border: '2px solid rgba(242, 140, 40, 0.4)',
+              boxShadow: '0 8px 32px rgba(242, 140, 40, 0.3)'
             }}>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 lg:mb-6 text-balance" style={{
-                color: '#f4d03f',
-                textShadow: '0 2px 4px rgba(244, 208, 63, 0.3)'
+                color: '#F28C28',
+                textShadow: '0 2px 4px rgba(242, 140, 40, 0.3)'
               }}>🎯 Our Mission</h2>
               <p className="text-base lg:text-lg mb-4 lg:mb-6 text-pretty" style={{
                 color: 'white',

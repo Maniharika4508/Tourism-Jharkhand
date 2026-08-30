@@ -1,1 +1,22 @@
-{}
+{
+  "app\\ar-vr\\page.tsx -> @/components/interactive-map": {
+    "id": 43370,
+    "files": [
+      "static/css/857aa62baa17c894.css",
+      "static/chunks/d0deef33.0379166a4ec23470.js",
+      "static/chunks/3370.1ddac0aaa3a2eccc.js"
+    ]
+  },
+  "app\\destinations\\page.tsx -> ../../public/destination.js": {
+    "id": 23086,
+    "files": [
+      "static/chunks/3086.a27e87d86ac75140.js"
+    ]
+  },
+  "app\\page.tsx -> ../public/destination.js": {
+    "id": 23086,
+    "files": [
+      "static/chunks/3086.a27e87d86ac75140.js"
+    ]
+  }
+}

@@ -52,9 +52,9 @@ export default function Navigation() {
               {isUserMenuOpen && (
                 <div className="absolute right-0 mt-2 w-64 shadow-xl z-50" style={{
                   borderRadius: '24px',
-                  background: 'linear-gradient(135deg, rgba(128, 0, 32, 0.2) 0%, rgba(30, 58, 138, 0.2) 100%)',
+                  background: 'linear-gradient(135deg, rgba(11, 61, 46, 0.2) 0%, rgba(20, 90, 58, 0.2) 100%)',
                   backdropFilter: 'blur(15px)',
-                  border: '3px solid rgba(244, 208, 63, 0.4)',
+                  border: '3px solid rgba(242, 140, 40, 0.4)',
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
                 }}>
                   <div className="py-6">
@@ -62,12 +62,12 @@ export default function Navigation() {
                       href="/profile"
                       className="flex items-center px-6 py-4 text-base font-medium mb-6"
                       style={{
-                        color: '#f4d03f',
-                        textShadow: '0 1px 3px rgba(244, 208, 63, 0.3)'
+                        color: '#F28C28',
+                        textShadow: '0 1px 3px rgba(242, 140, 40, 0.3)'
                       }}
                       onClick={() => setIsUserMenuOpen(false)}
                     >
-                      <User className="h-5 w-5 mr-4" style={{ color: '#f4d03f' }} />
+                      <User className="h-5 w-5 mr-4" style={{ color: '#F28C28' }} />
                       Profile
                     </Link>
                     <div
@@ -77,11 +77,11 @@ export default function Navigation() {
                       }}
                       className="flex items-center px-6 py-4 text-base font-medium cursor-pointer"
                       style={{
-                        color: '#f4d03f',
-                        textShadow: '0 1px 3px rgba(244, 208, 63, 0.3)'
+                        color: '#F28C28',
+                        textShadow: '0 1px 3px rgba(242, 140, 40, 0.3)'
                       }}
                     >
-                      <LogOut className="h-5 w-5 mr-4" style={{ color: '#f4d03f' }} />
+                      <LogOut className="h-5 w-5 mr-4" style={{ color: '#F28C28' }} />
                       Logout
                     </div>
                   </div>

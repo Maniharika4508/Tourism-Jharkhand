@@ -151,7 +151,7 @@ export default function AnalyticsPage() {
     }
   }
 
-  const COLORS = ['#800020', '#1e3a8a', '#f4d03f', '#a0001a', '#2563eb', '#fbbf24']
+  const COLORS = ['#0B3D2E', '#145A3A', '#F28C28', '#082621', '#2563eb', '#fbbf24']
 
   if (loading) {
     return (
@@ -169,29 +169,29 @@ export default function AnalyticsPage() {
             boxShadow: '0 8px 32px rgba(128, 0, 32, 0.3)'
           }}>
             <div style={{
-              background: 'linear-gradient(135deg, #f4d03f 0%, #d4af37 100%)',
+              background: 'linear-gradient(135deg, #F28C28 0%, #E67E1D 100%)',
               borderRadius: '50%',
               padding: '20px',
               display: 'inline-block',
               marginBottom: '24px',
-              boxShadow: '0 8px 25px rgba(244, 208, 63, 0.4)'
+              boxShadow: '0 8px 25px rgba(242, 140, 40, 0.4)'
             }}>
-              <RefreshCw className="h-12 w-12 animate-spin" style={{ color: '#800020' }} />
+              <RefreshCw className="h-12 w-12 animate-spin" style={{ color: '#0B3D2E' }} />
             </div>
             <h2 className="text-3xl font-bold mb-4" style={{
-              color: '#f4d03f',
-              textShadow: '0 2px 4px rgba(244, 208, 63, 0.3)'
+              color: '#F28C28',
+              textShadow: '0 2px 4px rgba(242, 140, 40, 0.3)'
             }}>🔄 Loading Analytics Dashboard</h2>
             <p className="text-lg" style={{ color: 'white' }}>Fetching comprehensive tourism insights...</p>
             <div className="mt-6 flex justify-center space-x-4">
               <div className="animate-pulse" style={{
-                background: 'rgba(244, 208, 63, 0.3)',
+                background: 'rgba(242, 140, 40, 0.3)',
                 height: '8px',
                 width: '60px',
                 borderRadius: '4px'
               }}></div>
               <div className="animate-pulse" style={{
-                background: 'rgba(244, 208, 63, 0.3)',
+                background: 'rgba(242, 140, 40, 0.3)',
                 height: '8px',
                 width: '60px',
                 borderRadius: '4px',

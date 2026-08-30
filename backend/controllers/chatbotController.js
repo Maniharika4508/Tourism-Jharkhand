@@ -1,473 +1,546 @@
-const axios = require('axios');
 const Groq = require('groq-sdk');
 
-// Rate limiting and caching
+// ===============================
+// CACHE
+// ===============================
 const API_CALL_CACHE = new Map();
 const API_CALL_TIMES = [];
-const MAX_CALLS_PER_MINUTE = 100; // Groq has much more generous limits
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes cache
 
-// Initialize Groq client (lazy initialization)
+const MAX_CALLS_PER_MINUTE = 100;
+const CACHE_DURATION = 10 * 60 * 1000;
+
+// ===============================
+// GROQ CLIENT
+// ===============================
 let groqClient = null;
 
 function getGroqClient() {
   if (!groqClient) {
-    try {
-      const apiKey = process.env.GROQ_API_KEY;
-      console.log('🔑 Initializing Groq client with key:', apiKey ? `${apiKey.substring(0, 20)}...` : 'undefined');
-      
-      if (!apiKey || apiKey === 'your_groq_api_key_here') {
-        throw new Error('GROQ_API_KEY is not set or still has placeholder value');
-      }
-      
-      groqClient = new Groq({
-        apiKey: apiKey
-      });
-      console.log('✅ Groq client initialized successfully');
-    } catch (error) {
-      console.error('❌ Groq client initialization failed:', error.message);
-      throw error;
+    const apiKey = process.env.GROQ_API_KEY;
+
+    console.log(
+      '🔑 Groq API Key:',
+      apiKey ? `${apiKey.substring(0, 10)}...` : 'NOT FOUND'
+    );
+
+    if (!apiKey || apiKey === 'your_groq_api_key_here') {
+      throw new Error('GROQ_API_KEY is not configured');
     }
+
+    groqClient = new Groq({
+      apiKey: apiKey
+    });
+
+    console.log('✅ Groq client initialized');
   }
+
   return groqClient;
 }
 
-// Language detection and translation mappings
+// ===============================
+// LANGUAGES
+// ===============================
 const LANGUAGE_MAPPINGS = {
-  'hi': 'Hindi',
-  'en': 'English',
-  'bho': 'Bhojpuri',
-  'mag': 'Magahi',
-  'mai': 'Maithili',
-  'sa': 'Sanskrit',
-  'ur': 'Urdu',
-  'bn': 'Bengali',
-  'or': 'Odia',
-  'auto': 'Auto-detect'
+  en: 'English',
+  hi: 'Hindi',
+  bn: 'Bengali',
+  or: 'Odia',
+  ur: 'Urdu',
+  bho: 'Bhojpuri',
+  mag: 'Magahi',
+  mai: 'Maithili',
+  sa: 'Sanskrit',
+  auto: 'Auto-detect'
 };
 
-// Tourism context for Jharkhand
-const TOURISM_CONTEXT = `You are a helpful tourism assistant for Jharkhand, India. You specialize in:
-- Tourist destinations in Jharkhand (Ranchi, Jamshedpur, Dhanbad, Bokaro, Deoghar, Hazaribagh, etc.)
-- Tribal culture and heritage sites
-- National parks and wildlife sanctuaries (Betla National Park, Dalma Wildlife Sanctuary)
-- Waterfalls (Hundru Falls, Dassam Falls, Jonha Falls)
-- Religious sites (Baidyanath Temple, Rajrappa Temple)
-- Adventure activities and eco-tourism
-- Local festivals and cultural events
-- Transportation and accommodation options
-- Best times to visit different locations
-- Local cuisine and shopping
-
-Always provide helpful, accurate information about Jharkhand tourism. If asked about other topics, politely redirect to tourism-related information about Jharkhand.`;
-
-/**
- * Detect language from text (basic detection)
- */
+// ===============================
+// LANGUAGE DETECTION
+// ===============================
 function detectLanguage(text) {
-  // Simple language detection based on script
   const hindiPattern = /[\u0900-\u097F]/;
   const bengaliPattern = /[\u0980-\u09FF]/;
   const odiaPattern = /[\u0B00-\u0B7F]/;
-  
-  if (hindiPattern.test(text)) return 'hi';
-  if (bengaliPattern.test(text)) return 'bn';
-  if (odiaPattern.test(text)) return 'or';
-  
-  return 'en'; // Default to English
+
+  if (hindiPattern.test(text)) {
+    return 'hi';
+  }
+
+  if (bengaliPattern.test(text)) {
+    return 'bn';
+  }
+
+  if (odiaPattern.test(text)) {
+    return 'or';
+  }
+
+  return 'en';
 }
 
-/**
- * Check if we can make API call (rate limiting)
- */
+// ===============================
+// RATE LIMIT
+// ===============================
 function canMakeAPICall() {
   const now = Date.now();
   const oneMinuteAgo = now - 60000;
-  
-  // Remove old timestamps
-  while (API_CALL_TIMES.length > 0 && API_CALL_TIMES[0] < oneMinuteAgo) {
+
+  while (
+    API_CALL_TIMES.length > 0 &&
+    API_CALL_TIMES[0] < oneMinuteAgo
+  ) {
     API_CALL_TIMES.shift();
   }
-  
+
   return API_CALL_TIMES.length < MAX_CALLS_PER_MINUTE;
 }
 
-/**
- * Get cached response if available
- */
+// ===============================
+// CACHE
+// ===============================
 function getCachedResponse(message, language) {
-  const cacheKey = `${message.toLowerCase().trim()}_${language}`;
-  const cached = API_CALL_CACHE.get(cacheKey);
-  
-  if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+  const key =
+    `${message.toLowerCase().trim()}_${language}`;
+
+  const cached = API_CALL_CACHE.get(key);
+
+  if (
+    cached &&
+    Date.now() - cached.timestamp < CACHE_DURATION
+  ) {
+    console.log('📦 Using cached response');
     return cached.response;
   }
-  
+
   return null;
 }
 
-/**
- * Cache API response
- */
 function cacheResponse(message, language, response) {
-  const cacheKey = `${message.toLowerCase().trim()}_${language}`;
-  API_CALL_CACHE.set(cacheKey, {
+  const key =
+    `${message.toLowerCase().trim()}_${language}`;
+
+  API_CALL_CACHE.set(key, {
     response,
     timestamp: Date.now()
   });
-  
-  // Clean old cache entries (keep only last 100)
+
   if (API_CALL_CACHE.size > 100) {
-    const oldestKey = API_CALL_CACHE.keys().next().value;
+    const oldestKey =
+      API_CALL_CACHE.keys().next().value;
+
     API_CALL_CACHE.delete(oldestKey);
   }
 }
 
-// Removed needsAIResponse function - now always using Groq AI
-
-/**
- * Call Groq API with Llama 3 70B for chat responses
- */
+// ===============================
+// GROQ API
+// ===============================
 const callGroqAPI = async (message, language) => {
-  const client = getGroqClient(); // Use lazy initialization
 
-  // Check cache first
-  const cachedResponse = getCachedResponse(message, language);
+  const client = getGroqClient();
+
+  // Check cache
+  const cachedResponse =
+    getCachedResponse(message, language);
+
   if (cachedResponse) {
-    console.log('📦 Using cached response');
     return cachedResponse;
   }
 
-  // Check rate limits
+  // Rate limit
   if (!canMakeAPICall()) {
-    console.log('⚠️ Rate limit reached, using fallback');
-    throw new Error('Rate limit exceeded');
+    throw new Error('Groq rate limit exceeded');
   }
 
-  // Record API call time
   API_CALL_TIMES.push(Date.now());
 
-  // Fetch relevant places from MongoDB or fallback to local files
-  let contextData = '';
-  let relevantPlaces = [];
-  
-  try {
-    const Place = require('../models/Place');
-    
-    // Search for relevant places based on keywords in the message
-    const searchTerms = message.toLowerCase().match(/\b\w+\b/g) || [];
-    const places = await Place.find({
-      $or: [
-        { name: { $regex: searchTerms.join('|'), $options: 'i' } },
-        { district: { $regex: searchTerms.join('|'), $options: 'i' } },
-        { category: { $regex: searchTerms.join('|'), $options: 'i' } },
-        { description: { $regex: searchTerms.join('|'), $options: 'i' } }
-      ]
-    }).limit(5);
+  const languageName =
+    LANGUAGE_MAPPINGS[language] || 'English';
 
-    if (places.length > 0) {
-      relevantPlaces = places;
-      contextData = '\n\nRelevant places in Jharkhand:\n';
-      places.forEach(place => {
-        contextData += `- ${place.name} (${place.district}): ${place.description} [Category: ${place.category}]`;
-        if (place.imageName) contextData += ` [Has Image: ${place.imageName}]`;
-        contextData += '\n';
-      });
-    } else {
-      // If no specific places found, get some popular places by category
-      const popularPlaces = await Place.find({}).limit(6);
-      if (popularPlaces.length > 0) {
-        relevantPlaces = popularPlaces;
-        contextData = '\n\nPopular places in Jharkhand:\n';
-        popularPlaces.forEach(place => {
-          contextData += `- ${place.name} (${place.district}): ${place.description} [Category: ${place.category}]\n`;
-        });
-      }
-    }
-  } catch (dbError) {
-    console.log('MongoDB query failed, trying fallback data:', dbError.message);
-    
-    // Fallback to local files
-    try {
-      const fallbackData = require('../utils/fallback-data');
-      const searchTerms = message.toLowerCase().match(/\b\w+\b/g) || [];
-      const places = await fallbackData.searchPlaces(searchTerms, 5);
-      
-      if (places.length > 0) {
-        relevantPlaces = places;
-        contextData = '\n\nRelevant places in Jharkhand (from local data):\n';
-        places.forEach(place => {
-          contextData += `- ${place.name} (${place.district}): ${place.description} [Category: ${place.category}]`;
-          if (place.imageName) contextData += ` [Has Image: ${place.imageName}]`;
-          contextData += '\n';
-        });
-      }
-    } catch (fallbackError) {
-      console.log('Fallback data also failed:', fallbackError.message);
-    }
-  }
+  const systemPrompt = `
+You are an AI tourism assistant for Jharkhand, India.
 
-  const systemPrompt = `You are a helpful tourism assistant for Jharkhand, India. You specialize in providing accurate information about tourist destinations, cultural sites, travel tips, and local attractions in Jharkhand.
+You help users with:
 
-Instructions:
-- Respond in ${LANGUAGE_MAPPINGS[language] || 'English'} language
-- Give direct, concise answers (2-3 sentences max)
-- Use the provided place data when available
-- Be helpful but brief
-- Focus on facts and practical information
-- Don't be overly enthusiastic or use excessive exclamation marks`;
+- Tourist destinations
+- Waterfalls
+- Wildlife
+- Temples
+- Tribal culture
+- Festivals
+- Local food
+- Transportation
+- Accommodation
+- Travel plans
+- Best time to visit
 
-  const userPrompt = `User question: ${message}
-
-${contextData ? 'Available tourism data:\n' + contextData : ''}
-
-Provide a short, helpful response about Jharkhand tourism.`;
+IMPORTANT:
+- Answer in ${languageName}.
+- Keep answers simple and useful.
+- Give 2 to 5 sentences.
+- Focus on Jharkhand tourism.
+- If the question is unrelated, politely bring the conversation back to Jharkhand tourism.
+`;
 
   try {
-    const chatCompletion = await client.chat.completions.create({
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt
-        },
-        {
-          role: 'user',
-          content: userPrompt
-        }
-      ],
-      model: 'llama-3.1-70b-versatile', // Llama 3.1 70B model
-      temperature: 0.7,
-      max_tokens: 1024,
-      top_p: 0.95,
-      stream: false
-    });
 
-    if (chatCompletion?.choices?.[0]?.message?.content) {
-      const result = chatCompletion.choices[0].message.content.trim();
-      // Cache successful response
-      cacheResponse(message, language, result);
-      console.log('✅ Groq API success with Llama 3 70B');
-      return result;
-    } else {
-      throw new Error('Invalid response format from Groq API');
-    }
-  } catch (apiError) {
-    console.error('❌ Groq API error:', apiError.message);
-    // If Llama 3 70B fails, try Llama 3 8B as fallback
-    try {
-      console.log('🔄 Trying Llama 3 8B as fallback...');
-      const fallbackCompletion = await client.chat.completions.create({
+    console.log('🤖 Calling Groq...');
+
+    const completion =
+      await client.chat.completions.create({
+
         messages: [
           {
             role: 'system',
-            content: `Tourism assistant for Jharkhand, India. Respond in ${LANGUAGE_MAPPINGS[language] || 'English'}.`
+            content: systemPrompt
           },
           {
             role: 'user',
-            content: `${message}\n\n${contextData ? 'Context: ' + contextData : ''}`
+            content: message
           }
         ],
-        model: 'llama-3.1-8b-instant', // Fallback to Llama 3.1 8B
+
+        model: 'llama-3.1-8b-instant',
+
         temperature: 0.7,
+
         max_tokens: 512,
+
         stream: false
       });
 
-      if (fallbackCompletion?.choices?.[0]?.message?.content) {
-        const result = fallbackCompletion.choices[0].message.content.trim();
-        cacheResponse(message, language, result);
-        console.log('✅ Groq fallback success with Llama 3.1 8B');
-        return result;
-      } else {
-        throw new Error('Both Groq models failed');
-      }
-    } catch (fallbackError) {
-      console.error('❌ Groq fallback also failed:', fallbackError.message);
-      throw new Error('All Groq models failed: ' + fallbackError.message);
-    }
-  }
-};
+    const response =
+      completion?.choices?.[0]?.message?.content;
 
-/**
- * Generate intelligent fallback response using MongoDB data
- */
-const generateIntelligentFallback = async (message, language) => {
-  try {
-    const Place = require('../models/Place');
-    
-    // Try MongoDB first
-    let places = [];
-    try {
-      const searchTerms = message.toLowerCase().match(/\b\w+\b/g) || [];
-      places = await Place.find({
-        $or: [
-          { name: { $regex: searchTerms.join('|'), $options: 'i' } },
-          { district: { $regex: searchTerms.join('|'), $options: 'i' } },
-          { category: { $regex: searchTerms.join('|'), $options: 'i' } },
-          { description: { $regex: searchTerms.join('|'), $options: 'i' } }
-        ]
-      }).limit(3);
-    } catch (dbError) {
-      console.log('MongoDB fallback failed, using local data:', dbError.message);
-      
-      // Use local fallback data
-      const fallbackData = require('../utils/fallback-data');
-      const searchTerms = message.toLowerCase().match(/\b\w+\b/g) || [];
-      places = await fallbackData.searchPlaces(searchTerms, 3);
+    if (!response) {
+      throw new Error(
+        'Empty response from Groq'
+      );
     }
 
-    let response = '';
-    const langMap = LANGUAGE_MAPPINGS[language] || 'English';
-    
-    if (places.length > 0) {
-      // Generate response based on found places
-      const placeNames = places.map(p => p.name).join(', ');
-      
-      if (language === 'hi') {
-        response = `झारखंड में ${placeNames} जैसी खूबसूरत जगहें हैं। `;
-        places.forEach(place => {
-          response += `${place.name} ${place.district} जिले में स्थित है और यह ${place.category} के लिए प्रसिद्ध है। `;
-          if (place.imageName) response += `[चित्र उपलब्ध: ${place.imageName}] `;
-        });
-      } else if (language === 'bn') {
-        response = `ঝাড়খণ্ডে ${placeNames} এর মতো সুন্দর জায়গা রয়েছে। `;
-        places.forEach(place => {
-          response += `${place.name} ${place.district} জেলায় অবস্থিত এবং ${place.category} এর জন্য বিখ্যাত। `;
-          if (place.imageName) response += `[ছবি উপলব্ধ: ${place.imageName}] `;
-        });
-      } else {
-        response = `Jharkhand has beautiful places like ${placeNames}. `;
-        places.forEach(place => {
-          response += `${place.name} is located in ${place.district} district and is famous for ${place.category}. `;
-          if (place.imageName) response += `[Image available: ${place.imageName}] `;
-        });
-      }
-    } else {
-      // If no places found, throw error instead of generic response
-      throw new Error('No relevant places found for the query');
-    }
-    
-    return response;
+    const finalResponse =
+      response.trim();
+
+    cacheResponse(
+      message,
+      language,
+      finalResponse
+    );
+
+    console.log('✅ Groq response received');
+
+    return finalResponse;
+
   } catch (error) {
-    console.error('Error in intelligent fallback:', error);
-    
-    // If no data available, throw error instead of simple fallback
-    throw new Error('No tourism data available and unable to generate response');
+
+    console.error(
+      '❌ Groq API error:',
+      error.message
+    );
+
+    throw error;
   }
 };
 
-/**
- * Simple fallback responses for different languages
- */
-const SIMPLE_FALLBACK_RESPONSES = {
-  'en': "I'm here to help you explore Jharkhand! Ask me about tourist destinations, cultural sites, or travel tips.",
-  'hi': "मैं झारखंड की खोज में आपकी मदद करने के लिए यहाँ हूँ! मुझसे पर्यटन स्थलों, सांस्कृतिक स्थानों या यात्रा सुझावों के बारे में पूछें।",
-  'bn': "আমি ঝাড়খণ্ড অন্বেষণে আপনাকে সাহায্য করতে এখানে আছি! পর্যটন গন্তব্য, সাংস্কৃতিক স্থান বা ভ্রমণ টিপস সম্পর্কে আমাকে জিজ্ঞাসা করুন।",
-  'or': "ମୁଁ ଝାଡଖଣ୍ଡ ଅନ୍ବେଷଣରେ ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରିବାକୁ ଏଠାରେ ଅଛି! ପର୍ଯ୍ୟଟନ ଗନ୍ତବ୍ୟ, ସାଂସ୍କୃତିକ ସ୍ଥାନ କିମ୍ବା ଭ୍ରମଣ ଟିପ୍ସ ବିଷୟରେ ମୋତେ ପଚାରନ୍ତୁ।"
+// ===============================
+// LOCAL FALLBACK
+// ===============================
+const generateIntelligentFallback =
+  async (message, language) => {
+
+    const text =
+      message.toLowerCase();
+
+    // =========================
+    // HINDI
+    // =========================
+    if (language === 'hi') {
+
+      if (
+        text.includes('waterfall') ||
+        text.includes('झरना')
+      ) {
+        return 'झारखंड में हुंडरू फॉल्स, दशम फॉल्स और जोन्हा फॉल्स प्रसिद्ध जलप्रपात हैं। हुंडरू फॉल्स रांची के पास स्थित है और पर्यटकों के बीच बहुत लोकप्रिय है।';
+      }
+
+      if (text.includes('ranchi')) {
+        return 'रांची झारखंड की राजधानी है। यहाँ हुंडरू फॉल्स, दशम फॉल्स और रांची झील जैसे लोकप्रिय पर्यटन स्थल हैं।';
+      }
+
+      if (
+        text.includes('temple') ||
+        text.includes('मंदिर') ||
+        text.includes('deoghar')
+      ) {
+        return 'देवघर का बैद्यनाथ मंदिर और रजरप्पा का छिन्नमस्तिका मंदिर झारखंड के प्रसिद्ध धार्मिक स्थल हैं।';
+      }
+
+      return 'मैं झारखंड पर्यटन के बारे में आपकी मदद कर सकता हूँ। आप पर्यटन स्थल, झरने, मंदिर, वन्यजीव, जनजातीय संस्कृति, भोजन या यात्रा योजना के बारे में पूछ सकते हैं।';
+    }
+
+    // =========================
+    // BENGALI
+    // =========================
+    if (language === 'bn') {
+
+      if (text.includes('waterfall')) {
+        return 'ঝাড়খণ্ডের বিখ্যাত জলপ্রপাতগুলির মধ্যে হুন্ডরু ফলস, দশম ফলস এবং জোনা ফলস উল্লেখযোগ্য।';
+      }
+
+      if (text.includes('ranchi')) {
+        return 'রাঁচি ঝাড়খণ্ডের রাজধানী এবং হুন্ডরু ফলস, দশম ফলস ও রাঁচি লেকের জন্য বিখ্যাত।';
+      }
+
+      return 'আমি ঝাড়খণ্ড পর্যটন সম্পর্কে আপনাকে সাহায্য করতে পারি। পর্যটন স্থান, জলপ্রপাত, মন্দির, সংস্কৃতি বা ভ্রমণ পরিকল্পনা সম্পর্কে জিজ্ঞাসা করুন।';
+    }
+
+    // =========================
+    // ODIA
+    // =========================
+    if (language === 'or') {
+
+      if (text.includes('waterfall')) {
+        return 'ଝାଡ଼ଖଣ୍ଡର ପ୍ରସିଦ୍ଧ ଜଳପ୍ରପାତ ମଧ୍ୟରେ ହୁଣ୍ଡ୍ରୁ ଫଲ୍ସ, ଦଶମ ଫଲ୍ସ ଏବଂ ଜୋନ୍ହା ଫଲ୍ସ ରହିଛି।';
+      }
+
+      if (text.includes('ranchi')) {
+        return 'ରାଞ୍ଚି ଝାଡ଼ଖଣ୍ଡର ରାଜଧାନୀ ଏବଂ ହୁଣ୍ଡ୍ରୁ ଫଲ୍ସ, ଦଶମ ଫଲ୍ସ ଓ ରାଞ୍ଚି ଲେକ୍ ପାଇଁ ପ୍ରସିଦ୍ଧ।';
+      }
+
+      return 'ମୁଁ ଝାଡ଼ଖଣ୍ଡ ପର୍ଯ୍ୟଟନ ବିଷୟରେ ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରିପାରିବି। ପର୍ଯ୍ୟଟନ ସ୍ଥାନ, ଜଳପ୍ରପାତ, ମନ୍ଦିର, ସଂସ୍କୃତି କିମ୍ବା ଭ୍ରମଣ ଯୋଜନା ବିଷୟରେ ପଚାରନ୍ତୁ।';
+    }
+
+    // =========================
+    // ENGLISH
+    // =========================
+
+    if (
+      text.includes('waterfall') ||
+      text.includes('falls')
+    ) {
+      return 'Jharkhand has several beautiful waterfalls, including Hundru Falls, Dassam Falls and Jonha Falls. Hundru Falls is one of the most popular attractions near Ranchi.';
+    }
+
+    if (text.includes('ranchi')) {
+      return 'Ranchi is the capital of Jharkhand. Popular attractions include Hundru Falls, Dassam Falls and Ranchi Lake.';
+    }
+
+    if (
+      text.includes('temple') ||
+      text.includes('deoghar')
+    ) {
+      return 'Jharkhand has important religious destinations such as Baidyanath Temple in Deoghar and Chhinnamasta Temple at Rajrappa.';
+    }
+
+    if (
+      text.includes('food') ||
+      text.includes('cuisine') ||
+      text.includes('eat')
+    ) {
+      return 'Jharkhand is known for traditional foods such as Dhuska, Litti Chokha, Rugra and Chilka Roti.';
+    }
+
+    if (
+      text.includes('culture') ||
+      text.includes('tribal') ||
+      text.includes('festival')
+    ) {
+      return 'Jharkhand is rich in tribal culture and traditions. Popular festivals include Sarhul, Karma and Sohrai.';
+    }
+
+    if (
+      text.includes('wildlife') ||
+      text.includes('forest') ||
+      text.includes('national park')
+    ) {
+      return 'Betla National Park and Dalma Wildlife Sanctuary are popular wildlife destinations in Jharkhand.';
+    }
+
+    return 'I can help you explore Jharkhand! Ask me about tourist destinations, waterfalls, temples, wildlife, tribal culture, local food, festivals or travel plans.';
 };
 
-/**
- * Enhanced chat message handler with Gemini API integration
- */
+// ===============================
+// SEND MESSAGE
+// ===============================
 const sendMessage = async (req, res) => {
-  try {
-    const { message, language } = req.body;
 
-    // Validate input
-    if (!message || typeof message !== 'string' || message.trim().length === 0) {
+  try {
+
+    const {
+      message,
+      language
+    } = req.body;
+
+    // Validate
+    if (
+      !message ||
+      typeof message !== 'string' ||
+      message.trim().length === 0
+    ) {
+
       return res.status(400).json({
         success: false,
-        error: 'Message is required and must be a non-empty string'
+        error: 'Message is required'
       });
+
     }
 
-    // Detect language if not provided
-    const detectedLanguage = language === 'auto' ? detectLanguage(message) : (language || 'en');
-    
+    // Detect language
+    const detectedLanguage =
+      language === 'auto'
+        ? detectLanguage(message)
+        : (language || 'en');
+
     let response;
-    
-    // Always use Groq AI for all queries
-    console.log('🤖 Using Groq AI for query:', message);
-    
+
+    // =========================
+    // TRY GROQ
+    // =========================
+
+    console.log(
+      '🤖 Using Groq AI for:',
+      message
+    );
+
     try {
-      response = await callGroqAPI(message, detectedLanguage);
-      console.log('✅ Groq API success:', response.substring(0, 100) + '...');
+
+      response =
+        await callGroqAPI(
+          message,
+          detectedLanguage
+        );
+
+      console.log(
+        '✅ Groq API success'
+      );
+
     } catch (groqError) {
-      console.error('❌ Groq API failed:', {
-        message: groqError.message,
-        status: groqError.response?.status,
-        statusText: groqError.response?.statusText,
-        data: groqError.response?.data
-      });
-      console.log('🔄 Trying intelligent fallback...');
-      try {
-        response = await generateIntelligentFallback(message, detectedLanguage);
-        console.log('✅ Fallback success:', response.substring(0, 100) + '...');
-      } catch (fallbackError) {
-        console.error('❌ Fallback also failed:', fallbackError.message);
-        throw fallbackError;
-      }
+
+      console.error(
+        '❌ Groq failed:',
+        groqError.message
+      );
+
+      // =========================
+      // LOCAL FALLBACK
+      // =========================
+
+      console.log(
+        '🔄 Using local fallback...'
+      );
+
+      response =
+        await generateIntelligentFallback(
+          message,
+          detectedLanguage
+        );
+
+      console.log(
+        '✅ Local fallback success'
+      );
     }
 
-    // Return the chatbot response
-    res.json({
+    // =========================
+    // SEND RESPONSE
+    // =========================
+
+    return res.json({
+
       success: true,
+
       response: response,
-      detectedLanguage: detectedLanguage,
-      supportedLanguages: Object.keys(LANGUAGE_MAPPINGS)
+
+      detectedLanguage:
+        detectedLanguage,
+
+      supportedLanguages:
+        Object.keys(LANGUAGE_MAPPINGS)
+
     });
 
   } catch (error) {
-    console.error('Chatbot error:', error.message);
-    
-    // Return error without fallback response
-    const detectedLanguage = detectLanguage(req.body.message || '');
-    res.status(500).json({
+
+    console.error(
+      '❌ Chatbot error:',
+      error.message
+    );
+
+    return res.status(500).json({
+
       success: false,
-      error: 'Sorry, I encountered an error. Please try again.',
-      detectedLanguage: detectedLanguage
+
+      error:
+        'Sorry, I encountered an error. Please try again.',
+
+      detectedLanguage:
+        detectLanguage(
+          req.body?.message || ''
+        )
+
     });
   }
 };
 
-/**
- * Health check for chatbot service
- */
+// ===============================
+// HEALTH CHECK
+// ===============================
 const healthCheck = async (req, res) => {
+
   try {
-    // Check if Groq API client can be initialized
-    try {
-      getGroqClient();
-    } catch (error) {
-      return res.status(503).json({
-        success: false,
-        chatbotService: 'unavailable',
-        error: 'Groq API client initialization failed: ' + error.message
-      });
-    }
-    
-    res.json({
+
+    getGroqClient();
+
+    return res.json({
+
       success: true,
-      chatbotService: 'available',
+
+      chatbotService:
+        'available',
+
       features: {
-        groqAPI: 'configured',
-        model: 'llama-3.1-70b-versatile',
-        fallbackModel: 'llama-3.1-8b-instant',
-        multilingualSupport: true,
-        supportedLanguages: Object.keys(LANGUAGE_MAPPINGS),
-        tourismContext: 'Jharkhand focused',
-        rateLimit: `${MAX_CALLS_PER_MINUTE} calls per minute`
+
+        groqAPI:
+          'configured',
+
+        model:
+          'llama-3.1-8b-instant',
+
+        multilingualSupport:
+          true,
+
+        supportedLanguages:
+          Object.keys(
+            LANGUAGE_MAPPINGS
+          ),
+
+        tourismContext:
+          'Jharkhand focused',
+
+        rateLimit:
+          `${MAX_CALLS_PER_MINUTE} calls per minute`
+
       }
+
     });
+
   } catch (error) {
-    res.status(503).json({
+
+    return res.status(503).json({
+
       success: false,
-      chatbotService: 'unavailable',
-      error: error.message
+
+      chatbotService:
+        'unavailable',
+
+      error:
+        error.message
+
     });
+
   }
 };
 
+// ===============================
+// EXPORT
+// ===============================
 module.exports = {
   sendMessage,
   healthCheck

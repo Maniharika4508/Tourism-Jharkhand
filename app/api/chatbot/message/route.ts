@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     
     // Forward the request to the backend API
-    const backendResponse = await fetch('http://localhost:5000/api/chatbot/message', {
+    const backendResponse = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/chatbot/message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     // Health check endpoint
-    const backendResponse = await fetch('http://localhost:5000/api/chatbot/health', {
+    const backendResponse = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/chatbot/health', {
       method: 'GET',
     })
 

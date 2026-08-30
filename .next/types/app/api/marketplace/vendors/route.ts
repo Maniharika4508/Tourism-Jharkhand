@@ -1,4 +1,4 @@
-// File: C:\Users\priya\OneDrive\Desktop\Tourism-Jharkhand\app\api\marketplace\vendors\route.ts
+// File: C:\Users\Maniharika\OneDrive\画像\Desktop\SIH-Tourism\Tourism-Jharkhand\app\api\marketplace\vendors\route.ts
 import * as entry from '../../../../../../app/api/marketplace/vendors/route.js'
 import type { NextRequest } from 'next/server.js'
 

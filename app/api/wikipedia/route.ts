@@ -5,32 +5,71 @@ export async function GET(req: NextRequest) {
   const query = searchParams.get('query');
 
   if (!query) {
-    return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Query parameter is required' },
+      { status: 400 }
+    );
   }
 
-  const url = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts|pageimages|info&exintro=true&explaintext=true&titles=${encodeURIComponent(query)}&pithumbsize=500&inprop=url`;
-
   try {
-    const response = await fetch(url);
+    const url =
+      `https://en.wikipedia.org/w/api.php` +
+      `?action=query` +
+      `&format=json` +
+      `&origin=*` +
+      `&prop=extracts|pageimages|info` +
+      `&exintro=true` +
+      `&explaintext=true` +
+      `&titles=${encodeURIComponent(query)}` +
+      `&pithumbsize=500` +
+      `&inprop=url`;
+
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'JharkhandTourism/1.0',
+      },
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Wikipedia API returned ${response.status}`);
+    }
+
     const data = await response.json();
+
+    if (!data?.query?.pages) {
+      return NextResponse.json(
+        { error: 'Invalid response from Wikipedia' },
+        { status: 502 }
+      );
+    }
+
     const pages = data.query.pages;
     const pageId = Object.keys(pages)[0];
 
-    if (pageId === '-1') {
-      return NextResponse.json({ error: 'No content found for this query' }, { status: 404 });
+    if (!pageId || pageId === '-1') {
+      return NextResponse.json(
+        { error: `No Wikipedia page found for "${query}"` },
+        { status: 404 }
+      );
     }
 
     const page = pages[pageId];
-    const extract = page.extract;
-    const thumbnail = page.thumbnail?.source;
-    const fullurl = page.fullurl;
 
-    if (extract) {
-      return NextResponse.json({ extract, thumbnail, fullurl });
-    } else {
-      return NextResponse.json({ error: 'No content found for this query' }, { status: 404 });
-    }
+    return NextResponse.json({
+      extract: page.extract || '',
+      thumbnail: page.thumbnail?.source || null,
+      fullurl: page.fullurl || null,
+    });
+
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch data from Wikipedia' }, { status: 500 });
+    console.error('Wikipedia API Error:', error);
+
+    return NextResponse.json(
+      {
+        error: 'Wikipedia service is currently unavailable',
+      },
+      { status: 503 }
+    );
   }
 }

@@ -68,7 +68,7 @@ export function useAuth() {
     try {
       // Call backend logout endpoint if token exists
       if (authState.token) {
-        await fetch('http://localhost:5000/api/auth/logout', {
+        await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/auth/logout', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${authState.token}`,

@@ -1,4 +1,4 @@
-// File: C:\Users\priya\OneDrive\Desktop\Tourism-Jharkhand\app\community\page.tsx
+// File: C:\Users\Maniharika\OneDrive\画像\Desktop\SIH-Tourism\Tourism-Jharkhand\app\community\page.tsx
 import * as entry from '../../../../app/community/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

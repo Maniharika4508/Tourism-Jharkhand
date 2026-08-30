@@ -1,4 +1,4 @@
-// File: C:\Users\priya\OneDrive\Desktop\Tourism-Jharkhand\app\marketplace\page.tsx
+// File: C:\Users\Maniharika\OneDrive\画像\Desktop\SIH-Tourism\Tourism-Jharkhand\app\marketplace\page.tsx
 import * as entry from '../../../../app/marketplace/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

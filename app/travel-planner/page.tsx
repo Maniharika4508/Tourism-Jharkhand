@@ -48,7 +48,7 @@ interface ApiResponse {
   fallback?: string;
 }
 
-export default function TravelPlannerPage() {
+function TravelPlannerContent() {
   const searchParams = useSearchParams();
   const [formData, setFormData] = useState<TravelPlannerForm>({
     destination: "",
@@ -138,7 +138,7 @@ export default function TravelPlannerPage() {
     console.log('Sending form data:', apiData);
 
     try {
-      const response = await fetch('http://localhost:5000/api/travel-planner/generate', {
+      const response = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/travel-planner/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -937,5 +937,20 @@ export default function TravelPlannerPage() {
 
       <Footer />
     </div>
-  )
+  );
+}
+
+export default function TravelPlannerPage() {
+  return (
+    <React.Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-10 w-10 animate-spin text-rose-500" />
+          <p className="text-gray-400 animate-pulse">Loading Travel Planner...</p>
+        </div>
+      </div>
+    }>
+      <TravelPlannerContent />
+    </React.Suspense>
+  );
 }

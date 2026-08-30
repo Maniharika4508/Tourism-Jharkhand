@@ -182,12 +182,12 @@ export default function ChatbotWidget() {
           onClick={() => setIsOpen(true)}
           className="h-20 w-20 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 group relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, #800020 0%, #1e3a8a 100%)',
-            border: '3px solid #f4d03f'
+            background: 'linear-gradient(135deg, #0B3D2E 0%, #145A3A 100%)',
+            border: '3px solid #F28C28'
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-          <Mountain className="h-10 w-10 text-yellow-300 relative z-10" style={{ color: '#f4d03f' }} />
+        <MessageCircle className="h-10 w-10 text-yellow-300 relative z-10" style={{ color: '#F28C28' }} />
         </Button>
       )}
 
@@ -205,31 +205,31 @@ export default function ChatbotWidget() {
             height: '600px',
             minHeight: '600px',
             maxHeight: '600px',
-            background: 'linear-gradient(135deg, rgba(128, 0, 32, 0.08) 0%, rgba(30, 58, 138, 0.08) 100%)',
+            background: 'linear-gradient(135deg, rgba(11, 61, 46, 0.08) 0%, rgba(20, 90, 58, 0.08) 100%)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             borderRadius: '25px',
-            border: '3px solid #f4d03f'
+            border: '3px solid #F28C28'
           }}
         >
           {/* Header - Fixed */}
           <div 
             className="px-4 py-4 text-white flex items-center justify-between flex-shrink-0 relative overflow-hidden"
             style={{ 
-              background: 'linear-gradient(135deg, #800020 0%, #1e3a8a 100%)',
-              borderBottom: '2px solid #f4d03f'
+              background: 'linear-gradient(135deg, #0B3D2E 0%, #145A3A 100%)',
+              borderBottom: '2px solid #F28C28'
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse"></div>
             <div className="flex items-center gap-3 relative z-10">
               <div className="relative">
-                <Mountain className="h-5 w-5" style={{ color: '#f4d03f' }} />
+                <Mountain className="h-5 w-5" style={{ color: '#F28C28' }} />
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse border-2 border-white"></div>
               </div>
               <div>
-                <span className="font-bold text-sm" style={{ color: '#f4d03f' }}>Jharkhand Tourism</span>
-                <div className="text-xs flex items-center gap-1" style={{ color: '#f4d03f' }}>
-                  <Sparkles className="h-3 w-3" style={{ color: '#f4d03f' }} />
+                <span className="font-bold text-sm" style={{ color: '#F28C28' }}>Jharkhand Tourism</span>
+                <div className="text-xs flex items-center gap-1" style={{ color: '#F28C28' }}>
+                  <Sparkles className="h-3 w-3" style={{ color: '#F28C28' }} />
                   AI Assistant
                 </div>
               </div>
@@ -241,7 +241,7 @@ export default function ChatbotWidget() {
                 size="sm"
                 onClick={() => setIsOpen(false)}
                 className="hover:bg-white/20 h-10 w-10 p-0 flex-shrink-0 rounded-full"
-                style={{ backgroundColor: 'rgba(255, 192, 203, 0.2)' }}
+                style={{ backgroundColor: 'rgba(242, 140, 40, 0.2)' }}
               >
                 <X className="h-6 w-6" style={{ color: '#ff69b4' }} />
               </Button>
@@ -252,7 +252,7 @@ export default function ChatbotWidget() {
           <div 
             className="flex-1 overflow-y-auto p-4 space-y-4 chatbot-scrollbar" 
             style={{
-              background: 'linear-gradient(135deg, rgba(128, 0, 32, 0.12) 0%, rgba(30, 58, 138, 0.12) 100%)',
+              background: 'linear-gradient(135deg, rgba(11, 61, 46, 0.12) 0%, rgba(20, 90, 58, 0.12) 100%)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
               height: '420px',
@@ -265,18 +265,18 @@ export default function ChatbotWidget() {
                 key={message.id}
                 className={`flex items-start gap-2 ${message.isUser ? 'flex-row-reverse justify-start' : 'justify-start'}`}
               >
-                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-lg" style={{ background: 'linear-gradient(135deg, rgba(128, 0, 32, 0.2) 0%, rgba(30, 58, 138, 0.2) 100%)', border: '1px solid #f4d03f' }}>
+                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-lg" style={{ background: 'linear-gradient(135deg, rgba(11, 61, 46, 0.2) 0%, rgba(20, 90, 58, 0.2) 100%)', border: '1px solid #F28C28' }}>
                   {message.isUser ? '👤' : '🤖'}
                 </div>
                 <div
                   className={`max-w-[75%] px-4 py-3 text-sm break-words shadow-sm text-white`}
                   style={{ 
                     background: message.isUser 
-                      ? 'linear-gradient(135deg, rgba(128, 0, 32, 0.15) 0%, rgba(30, 58, 138, 0.15) 100%)'
-                      : 'linear-gradient(135deg, rgba(128, 0, 32, 0.12) 0%, rgba(30, 58, 138, 0.12) 100%)',
+                      ? 'linear-gradient(135deg, rgba(11, 61, 46, 0.15) 0%, rgba(20, 90, 58, 0.15) 100%)'
+                      : 'linear-gradient(135deg, rgba(11, 61, 46, 0.12) 0%, rgba(20, 90, 58, 0.12) 100%)',
                     backdropFilter: 'blur(10px)',
                     WebkitBackdropFilter: 'blur(10px)',
-                    border: '2px solid #f4d03f',
+                    border: '2px solid #F28C28',
                     borderRadius: '20px',
                     wordWrap: 'break-word',
                     overflowWrap: 'break-word',
@@ -291,16 +291,16 @@ export default function ChatbotWidget() {
             
             {(isLoading || isTyping) && (
               <div className="flex justify-start items-start gap-2">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-lg" style={{ background: 'linear-gradient(135deg, rgba(128, 0, 32, 0.2) 0%, rgba(30, 58, 138, 0.2) 100%)', border: '1px solid #f4d03f' }}>
+                <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-lg" style={{ background: 'linear-gradient(135deg, rgba(11, 61, 46, 0.2) 0%, rgba(20, 90, 58, 0.2) 100%)', border: '1px solid #F28C28' }}>
                   🤖
                 </div>
                 <div 
                   className="px-4 py-3 shadow-md" 
                   style={{
-                    background: 'linear-gradient(135deg, rgba(128, 0, 32, 0.12) 0%, rgba(30, 58, 138, 0.12) 100%)',
+                    background: 'linear-gradient(135deg, rgba(11, 61, 46, 0.12) 0%, rgba(20, 90, 58, 0.12) 100%)',
                     backdropFilter: 'blur(10px)',
                     WebkitBackdropFilter: 'blur(10px)',
-                    border: '2px solid #f4d03f',
+                    border: '2px solid #F28C28',
                     borderRadius: '20px'
                   }}
                 >
@@ -321,7 +321,7 @@ export default function ChatbotWidget() {
           <div 
             className="p-4 border-t-2 border-yellow-200 flex-shrink-0"
             style={{
-              background: 'linear-gradient(135deg, rgba(128, 0, 32, 0.1) 0%, rgba(30, 58, 138, 0.1) 100%)',
+              background: 'linear-gradient(135deg, rgba(11, 61, 46, 0.1) 0%, rgba(20, 90, 58, 0.1) 100%)',
               backdropFilter: 'blur(15px)',
               WebkitBackdropFilter: 'blur(15px)'
             }}
@@ -348,12 +348,12 @@ export default function ChatbotWidget() {
                 size="sm"
                 className="h-10 w-10 p-0 rounded-full flex-shrink-0 shadow-lg hover:shadow-xl transition-all duration-200"
                 style={{ 
-                  background: 'linear-gradient(135deg, #800020 0%, #1e3a8a 100%)',
-                  border: '2px solid #f4d03f',
+                  background: 'linear-gradient(135deg, #0B3D2E 0%, #145A3A 100%)',
+                  border: '2px solid #F28C28',
                   opacity: (!inputMessage.trim() || isLoading) ? 0.5 : 1
                 }}
               >
-                <Send className="h-4 w-4" style={{ color: '#f4d03f' }} />
+                <Send className="h-4 w-4" style={{ color: '#F28C28' }} />
               </Button>
             </div>
           </div>

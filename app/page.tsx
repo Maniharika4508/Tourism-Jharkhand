@@ -68,7 +68,7 @@ export default function HomePage() {
   const fetchImageForDestination = async (destinationId: string): Promise<string | null> => {
     try {
       console.log(`🏠 Home: Fetching image for destination: "${destinationId}"`);
-      const url = `http://localhost:5000/api/images/place-name/${encodeURIComponent(destinationId)}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/images/place-name/${encodeURIComponent(destinationId)}`;
       console.log(`🏠 Home: API URL: ${url}`);
       
       const response = await fetch(url);
@@ -295,8 +295,8 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
-          <h1>Discover the Heart of Jharkhand</h1>
-          <p>Experience pristine forest, rich tribal culture, ancient temples, and vibrant festivals – all powered by AI.</p>
+          <h1>Experience the Soul of Jharkhand</h1>
+          <p>Explore the natural beauty, vibrant tribal heritage, breathtaking waterfalls, and hidden gems of Jharkhand — all in one unforgettable journey. – all powered by AI.</p>
           <div className="hero-buttons">
             <Link href="/destinations">
               <button className="btn primary">Start Your Journey</button>

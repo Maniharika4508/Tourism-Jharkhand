@@ -15,7 +15,7 @@ import {
   Link as LinkIcon
 } from "lucide-react"
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams()
   const [paymentId, setPaymentId] = useState("")
   const [blockchainHash, setBlockchainHash] = useState("")
@@ -164,5 +164,23 @@ export default function PaymentSuccessPage() {
 
       <Footer />
     </div>
-  )
+  );
+}
+
+import * as React from "react"
+import { Loader2 as LoaderIcon } from "lucide-react"
+
+export default function PaymentSuccessPage() {
+  return (
+    <React.Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
+        <div className="flex flex-col items-center gap-3">
+          <LoaderIcon className="h-10 w-10 animate-spin text-rose-500" />
+          <p className="text-gray-400 animate-pulse">Loading Payment Details...</p>
+        </div>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </React.Suspense>
+  );
 }

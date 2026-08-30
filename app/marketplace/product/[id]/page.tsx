@@ -248,7 +248,7 @@ export default function SimpleProductPage() {
             userId: user._id
           }
 
-          const blockchainResponse = await fetch('http://localhost:5000/api/payment/process', {
+          const blockchainResponse = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/payment/process', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
