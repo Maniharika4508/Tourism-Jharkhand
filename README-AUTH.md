@@ -1,149 +1,199 @@
-# Authentication System Documentation
+# Jharkhand Tourism – User Authentication System
 
-## Overview
-Complete authentication system for Jharkhand Tourism website with login, signup, logout, and profile management.
+## 1. Introduction
 
-## Features Implemented
+The Jharkhand Tourism application includes a user authentication module that allows users to create accounts, securely log in, manage their profiles, and log out of the application.
 
-### 🔐 Authentication Flow
-- **User Registration**: Name, email, password, phone validation
-- **User Login**: Email/password authentication with JWT tokens
-- **User Logout**: Secure logout with token cleanup
-- **Profile Management**: View and edit user profile information
-- **Protected Routes**: Authentication middleware for secure endpoints
+The system uses frontend authentication components together with backend APIs and database storage to manage registered users.
 
-### 🎯 Frontend Components
+---
 
-#### 1. Authentication Page (`/app/auth/page.tsx`)
-- Toggle between login and signup modes
-- Form validation (email format, password length, phone number)
-- Real-time error handling and feedback
-- Integration with authentication hook
-- Responsive design with maroon/navy/gold theme
+# 2. Authentication Capabilities
 
-#### 2. Authentication Hook (`/hooks/use-auth.ts`)
-- Global authentication state management
-- Persistent login state across page reloads
-- Token and user data storage in localStorage
-- Centralized login/logout functions
-- User profile updates
+The authentication module provides the following functionality:
 
-#### 3. Enhanced Navigation (`/components/navigation.tsx`)
-- Dynamic UI based on authentication state
-- User dropdown menu when logged in
-- Profile access and logout functionality
-- Mobile-responsive authentication menu
+* New user account creation
+* Existing user login
+* User logout
+* Profile viewing
+* Profile information editing
+* Password management
+* Authentication state handling
+* Protected application routes
+* Backend request authentication
+* Input validation and error handling
 
-#### 4. Profile Page (`/app/profile/page.tsx`)
-- View user profile information
-- Edit name and phone number
-- Account status and member since date
-- Protected route (requires authentication)
+---
 
-### 🛡️ Backend Security
+# 3. User Registration
 
-#### Authentication Controller (`/backend/controllers/authController.js`)
-- Password hashing with bcrypt
-- JWT token generation (7-day expiry)
-- User registration with duplicate email check
-- Login with password verification
-- Profile management endpoints
-- Account status validation
+New users can create an account by providing the required information.
 
-#### Security Middleware
-- Rate limiting (500 requests/15 minutes)
-- CORS protection for localhost origins
-- Helmet security headers
-- Input validation and sanitization
-- Protected route authentication
+### Registration Details
 
-### 📡 API Endpoints
+* Name
+* Email address
+* Phone number
+* Password
 
-```
-POST /api/auth/register    - User registration
-POST /api/auth/login       - User authentication
-POST /api/auth/logout      - User logout
-GET  /api/auth/profile     - Get user profile
-PUT  /api/auth/profile     - Update user profile
-PUT  /api/auth/change-password - Change password
+The registration form validates the entered information before sending the request to the backend.
+
+The backend checks whether the email is already registered and securely stores the user's password after hashing.
+
+---
+
+# 4. User Login
+
+Registered users can access their account through the login page.
+
+### Login Process
+
+```text
+User enters credentials
+        ↓
+Frontend validates input
+        ↓
+Request sent to backend
+        ↓
+Backend verifies account
+        ↓
+Password verification
+        ↓
+JWT token generated
+        ↓
+User session established
+        ↓
+Authenticated interface displayed
 ```
 
-### 🔧 Usage Instructions
+A valid authentication token allows the user to access protected resources.
 
-#### Starting the System
-1. **Backend Server**:
-   ```bash
-   cd backend
-   npm install
-   npm start
-   ```
-   Server runs on http://localhost:5000
+---
 
-2. **Frontend Application**:
-   ```bash
-   npm install
-   npm run dev
-   ```
-   Application runs on http://localhost:3000
+# 5. Logout
 
-#### Testing Authentication
-1. Navigate to `/auth` page
-2. Register a new account or login with existing credentials
-3. Upon successful authentication, user is redirected to `/destinations`
-4. Navigation shows user menu with profile access and logout
-5. Visit `/profile` to view and edit profile information
+Users can securely sign out from the navigation menu.
 
-#### Authentication Flow
-1. User submits login/signup form
-2. Frontend validates input and sends to backend
-3. Backend verifies credentials/creates user
-4. JWT token generated and returned to frontend
-5. Token and user data stored in localStorage
-6. Navigation updates to show authenticated state
-7. Protected routes accessible with valid token
+During logout:
 
-### 🎨 Design Features
-- Consistent maroon (#800020), navy (#1e3a8a), gold (#f4d03f) color scheme
-- Glassmorphism effects with translucent backgrounds
-- Smooth animations and hover effects
-- Responsive design for mobile and desktop
-- Form validation with real-time feedback
-- Loading states and error handling
+1. The current authentication data is cleared.
+2. Stored session information is removed.
+3. The application returns to the unauthenticated state.
+4. Protected pages can no longer be accessed using the previous session.
 
-### 🔒 Security Features
-- Bcrypt password hashing with salt
-- JWT tokens with secure secret and expiration
-- Rate limiting to prevent brute force attacks
-- CORS protection for cross-origin requests
-- Input validation and sanitization
-- Protected routes with authentication middleware
-- Secure token storage and cleanup on logout
+---
 
-### 📱 Mobile Responsiveness
-- Mobile-friendly navigation menu
-- Touch-optimized form inputs
-- Responsive grid layouts
-- Optimized button sizes for mobile
-- Collapsible user menu for small screens
+# 6. Profile Management
 
-## File Structure
-```
-/app/auth/page.tsx          - Authentication page component
-/app/profile/page.tsx       - User profile page
-/hooks/use-auth.ts          - Authentication state hook
-/components/navigation.tsx  - Enhanced navigation with auth
-/backend/controllers/authController.js - Authentication logic
-/backend/routes/auth.js     - Authentication routes
-/backend/middleware/auth.js - Authentication middleware
-/backend/models/User.js     - User database model
+Authenticated users can access their profile page.
+
+The profile section provides options to:
+
+* View account information
+* Update name
+* Update phone number
+* View account status
+* View membership information
+* Manage account-related information
+
+Profile operations are available only to authenticated users.
+
+---
+
+# 7. Frontend Authentication Module
+
+## Authentication Page
+
+**Location:**
+
+```text
+/app/auth/page.tsx
 ```
 
-## Environment Variables
-```
-JWT_SECRET=your_jwt_secret_key
-MONGODB_URI=your_mongodb_connection_string
-PORT=5000
-NODE_ENV=development
+The authentication page provides both login and registration functionality.
+
+Main features include:
+
+* Login/signup switching
+* Form validation
+* Error messages
+* Loading indicators
+* Backend API integration
+* Responsive interface
+
+---
+
+## Authentication State Hook
+
+**Location:**
+
+```text
+/hooks/use-auth.ts
 ```
 
-The authentication system is now fully functional with comprehensive security, user experience, and integration features.
+This hook manages authentication-related state throughout the frontend.
+
+Responsibilities include:
+
+* Maintaining current user information
+* Tracking login status
+* Performing login requests
+* Performing logout operations
+* Maintaining authentication state after page reload
+* Updating profile information
+
+---
+
+## Navigation Integration
+
+**Location:**
+
+```text
+/components/navigation.tsx
+```
+
+The navigation component changes according to the user's authentication state.
+
+### Logged-out state
+
+Users can access the authentication interface.
+
+### Logged-in state
+
+Users can see:
+
+* User information
+* Profile option
+* Logout option
+
+The navigation is also designed to work on smaller screens.
+
+---
+
+## Profile Interface
+
+**Location:**
+
+```text
+/app/profile/page.tsx
+```
+
+The profile page displays information belonging to the authenticated user.
+
+Users can edit permitted profile fields through the interface.
+
+---
+
+# 8. Backend Authentication
+
+The backend handles authentication requests and user account operations.
+
+## Authentication Controller
+
+**Location:**
+
+```text
+/backend/controllers/authController.js
+```
+
+The controller m
