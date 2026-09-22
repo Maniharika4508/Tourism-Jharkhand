@@ -1,95 +1,227 @@
-# 🏞️ Tourism-Jharkhand
+# 🌿 Jharkhand Tourism – Smart Digital Tourism Platform
 
-## 🌐 Overview
+## 📌 Project Overview
 
-This repository contains an interactive platform for exploring tourist and cultural sites in Jharkhand, India. The project offers features such as interactive maps and AR/VR previews to enhance tourism experiences.
+**Jharkhand Tourism** is a smart digital platform designed to promote the **eco-tourism and cultural tourism** of Jharkhand.
 
----
+The platform provides tourists with information about popular destinations, waterfalls, wildlife, tribal culture, local food, handicrafts, festivals, and other cultural experiences.
 
-## ✨ Features
-
-- 🗺️ **Interactive Maps:** Navigate and discover places across Jharkhand.
-- 🏛️ **Cultural & Tourist Sites:** Explore detailed information about various destinations.
-- 🌁 **AR/VR Previews:** Experience sites virtually before visiting.
-- 📸 **Image Management:** Upload and view site images.
-- 🔎 **Search & Filter:** Find places by name, district, or proximity.
-- 🗄️ **RESTful API:** Clean endpoints for all operations.
+It also includes AI-powered features such as an **AI Trip Planner** and **Tourism Chatbot** to provide personalized travel assistance.
 
 ---
 
-## ⚙️ Tech Stack
+## 🎯 Objectives
 
-- **Node.js** + **Express.js** (Backend API)
-- **MongoDB** + **GridFS** (Database & Image Storage)
-- **Helmet, CORS, Rate Limiting** (Security)
-- **Multer** (File upload)
+* Promote eco-tourism and cultural tourism in Jharkhand.
+* Provide useful information about tourist destinations and local culture.
+* Generate personalized travel plans using an AI-based trip planner.
+* Provide quick assistance through a multilingual tourism chatbot.
+* Support local communities, handicrafts, food, festivals, and cultural experiences.
+* Improve the overall tourist experience using digital technologies.
 
 ---
 
-## 🚀 Steps for Execution
+## ✨ Key Features
 
-### 1️⃣ Clone the Repository
+### 🤖 AI Tourism Chatbot
 
-```bash
-git clone https://github.com/PRATHAM10805/Tourism-Jharkhand.git
-cd Tourism-Jharkhand/backend
-```
+* Provides information about Jharkhand tourism.
+* Supports multilingual conversations.
+* Supports English, Telugu, Hindi, Roman Telugu, and Hinglish.
+* Maintains context during follow-up questions.
+* Uses verified project knowledge to reduce unsupported information.
 
-### 2️⃣ Install Dependencies
+### ✈️ AI Trip Planner
 
-```bash
-npm install
-```
+Users can provide:
 
-### 3️⃣ Environment Setup
+* Travel duration
+* Budget
+* Interests
+* Preferred activities
 
-```bash
-cp .env.example .env
-# Edit .env with your MongoDB URI and other settings
-```
+The system generates a personalized tourism plan based on the selected preferences.
 
-### 4️⃣ Start MongoDB
+### 🏞️ Tourist Destinations
 
-- Make sure MongoDB is running locally or provide your Atlas URI in `.env`.
+The platform provides information about destinations such as:
 
-### 5️⃣ Seed Initial Data
+* Dassam Falls
+* Hundru Falls
+* Betla National Park
+* Netarhat
+* Dalma
+* Baidyanath Temple
+* Trikut Hill
+* Parasnath Hill
+* Canary Hill
+* Moti Jharna
 
-```bash
-npm run seed
-```
+### 🌳 Eco-Tourism
 
-### 6️⃣ Start the Server
+The platform promotes:
 
-- For development (with hot reload):
+* Waterfalls
+* Wildlife
+* Forest destinations
+* Nature-based tourism
+* Responsible tourism practices
 
-```bash
-npm run dev
-```
+### 🪶 Cultural Tourism
 
-- For production:
+Information about:
 
-```bash
-npm start
-```
+* Tribal culture
+* Local food
+* Handicrafts
+* Festivals
+* Traditional experiences
+
+### 💳 Secure Payment Support
+
+The platform includes a tourism booking/payment flow with **Razorpay integration** for payment processing.
+
+---
+
+## 🛠️ Technologies Used
+
+### Frontend
+
+* Next.js
+* React
+* JavaScript
+* HTML
+* CSS
+
+### Backend
+
+* Node.js
+* Express.js
+* REST APIs
+
+### Database
+
+* MongoDB
+
+### AI
+
+* Groq API
+* AI-powered Tourism Chatbot
+* AI Trip Planner
+
+### Tools & Deployment
+
+* Git
+* GitHub
+* VS Code
+* Vercel
+* Railway
 
 ---
 
 ## 🏗️ Project Structure
 
+```text
+Tourism-Jharkhand/
+│
+├── api/
+├── backend/
+├── components/
+├── data/
+├── db/
+├── public/
+├── app/
+├── package.json
+├── vercel.json
+└── README.md
 ```
 
 ---
 
-## 📖 Explanation of the Repo
+## 🚀 Getting Started
 
-**Tourism-Jharkhand** is designed to digitize and enrich tourism information for Jharkhand. It provides a robust backend for managing places, images, and advanced search features, supporting an interactive frontend (potentially with AR/VR capabilities).
+### 1. Clone the repository
 
-You can:
-- Upload & manage information about tourist spots,
-- Store and serve images efficiently,
-- Search, filter, and discover places using flexible APIs,
-- Extend the system for future features such as events, AR/VR, and analytics.
+```bash
+git clone https://github.com/Maniharika4508/Tourism-Jharkhand.git
+```
 
-**Perfect for:** Tourism departments, travel startups, developers building interactive travel guides, or anyone wanting to promote Jharkhand’s heritage using modern tech!
+### 2. Open the project
+
+```bash
+cd Tourism-Jharkhand
+```
+
+### 3. Install dependencies
+
+```bash
+npm install
+```
+
+### 4. Configure environment variables
+
+Create a `.env.local` file and add the required environment variables.
+
+Do not upload API keys, database credentials, or secret keys to GitHub.
+
+### 5. Start the frontend
+
+```bash
+npm run dev
+```
+
+The frontend will normally run at:
+
+```text
+http://localhost:3000
+```
+
+### 6. Start the backend
+
+Open another terminal:
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+The backend runs on:
+
+```text
+http://localhost:5000
+```
 
 ---
+
+## 🤖 AI Chatbot
+
+The tourism chatbot is powered by **Groq** and uses the verified tourism knowledge available within the project.
+
+It is designed to:
+
+* Answer tourism-related questions.
+* Understand multiple languages.
+* Handle follow-up questions.
+* Maintain conversation context.
+* Avoid inventing unsupported tourism information.
+
+---
+
+## 🌍 Vision
+
+The goal of this project is to create a **smart, accessible, and technology-driven tourism platform** that helps visitors explore the natural beauty, cultural heritage, wildlife, traditions, and local experiences of Jharkhand.
+
+---
+
+## 👩‍💻 Team
+
+**Team – Jharkhand Tourism**
+
+Developed as a Smart Tourism Platform project for promoting **Eco & Cultural Tourism in Jharkhand**.
+
+---
+
+## 📄 License
+
+This project is developed for educational and project demonstration purposes.
