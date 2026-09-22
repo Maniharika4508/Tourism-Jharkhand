@@ -1,164 +1,297 @@
-# Quick Deployment Checklist for Hackathon Submission
+# Jharkhand Tourism – Hackathon Deployment Checklist
 
-## 🚀 Complete These Steps to Deploy Your Application
+## Deployment Goal
 
-### Phase 1: Create Accounts (5 minutes)
-- [ ] Create/Login to Vercel: https://vercel.com
-- [ ] Create/Login to Railway: https://railway.app
-- [ ] Both should be connected to your GitHub account
+The application will be deployed using:
 
-### Phase 2: Deploy Backend to Railway (10 minutes)
+* **GitHub** – Source code
+* **Railway** – Backend API
+* **Vercel** – Next.js frontend
+* **MongoDB Atlas** – Database
+* **Groq API** – AI chatbot
+* **Razorpay** – Payment service, if enabled
 
-**MANUAL STEPS (I cannot automate these, but they're simple):**
+---
 
-1. **Go to Railway.app**
-   - Click "Start New Project" 
-   - Select "Deploy from GitHub"
-   - Authorize Railway to access GitHub
-   
-2. **Select Repository**
-   - Find "Tourism-Jharkhand" repository
-   - Click "Deploy"
-   
-3. **Railway Auto-Detection**
-   - Railway will detect it's a Node.js project
-   - It will auto-build from `backend/package.json`
-   
-4. **Add Environment Variables to Railway**
-   - In Railway dashboard, go to your Backend service
-   - Click "Variables" tab
-   - Add these EXACTLY as shown:
+# Step 1: Prepare the Project
 
+Before starting deployment, verify that the latest project changes are pushed to GitHub.
+
+### Check the repository
+
+```text
+Maniharika4508/Tourism-Jharkhand
 ```
-MONGODB_URI=mongodb+srv://maniharika945_db_user:NnMs3xFkNLKvhCxr@cluster0.kgucvtd.mongodb.net/jharkhand_tourism?appName=Cluster0
-PORT=3000
+
+### Local verification
+
+Run the frontend:
+
+```bash
+npm install
+npm run dev
+```
+
+Run the backend separately:
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+Verify that the frontend and backend work correctly before deploying.
+
+### Pre-deployment checklist
+
+* [ ] Frontend opens correctly
+* [ ] Backend starts without errors
+* [ ] MongoDB connection works
+* [ ] Chatbot responds
+* [ ] Trip Planner works
+* [ ] Images load correctly
+* [ ] `.env` files are excluded from Git
+* [ ] Latest code is pushed to GitHub
+
+---
+
+# Step 2: Publish the Backend
+
+The Express.js backend will run on Railway.
+
+### Railway Setup
+
+1. Open Railway.
+2. Sign in using GitHub.
+3. Create a new project.
+4. Choose the GitHub repository.
+5. Select the `Tourism-Jharkhand` repository.
+6. Configure the backend service to use:
+
+```text
+backend/
+```
+
+Railway will then build the Node.js backend.
+
+---
+
+## Backend Configuration
+
+Add the required environment variables from the Railway dashboard.
+
+Use placeholders for private values:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
 NODE_ENV=production
-JWT_SECRET=your-secret-jwt-key-at-least-32-characters-long
-FRONTEND_URL=(leave blank for now, update later)
-GROQ_API_KEY=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
-GEMINI_API_KEY=your-gemini-api-key-here
-MAX_FILE_SIZE=10485760
-ALLOWED_IMAGE_TYPES=image/jpeg,image/jpg,image/png,image/gif,image/webp
+PORT=5000
+GROQ_API_KEY=your_groq_api_key
+FRONTEND_URL=your_vercel_frontend_url
 ```
 
-5. **Wait for Deployment**
-   - Railway will build and deploy automatically
-   - You'll see a green checkmark when done
-   - **IMPORTANT: Copy the provided URL** (e.g., `https://production-xxx.railway.app`)
+If Razorpay is configured:
 
-### Phase 3: Deploy Frontend to Vercel (10 minutes)
-
-1. **Go to Vercel Dashboard**
-   - Click "Add New Project"
-   - Select "Import Git Repository"
-   - Find "Tourism-Jharkhand"
-   
-2. **Configure Project**
-   - Framework: "Next.js" (auto-detected)
-   - Root Directory: "./" (default)
-   - Build Command: "npm run build" (auto-detected)
-   
-3. **Add Environment Variables to Vercel**
-   - In project settings, go to "Environment Variables"
-   - Add this (replace with your Railway URL from Phase 2):
-
-```
-NEXT_PUBLIC_API_URL=https://your-railway-url-here.railway.app
-NEXT_PUBLIC_APP_URL=https://your-vercel-url.vercel.app
+```env
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 ```
 
-4. **Deploy**
-   - Click "Deploy"
-   - Vercel will build and deploy automatically
-   - **Copy the Vercel URL** when deployment completes (e.g., `https://your-app.vercel.app`)
+### Security Rule
 
-### Phase 4: Update CORS Configuration (5 minutes)
+Do **not** paste actual passwords, API keys, or secret keys into documentation.
 
-1. **Go Back to Railway**
-   - Click on your Backend service
-   - Go to "Variables"
-   - Update `FRONTEND_URL` with your Vercel URL
-   - Railway will auto-redeploy
+---
 
-2. **Go to Vercel**
-   - Go to Settings → Environment Variables
-   - Verify `NEXT_PUBLIC_API_URL` is set to Railway URL
-   - Trigger redeploy if needed
+## Start Command
 
-### Phase 5: Test Your Application (10 minutes)
+The backend should use:
 
-1. **Test Backend is Running**
-   - Visit: `https://your-railway-url.railway.app/api/health`
-   - Should see JSON response
-
-2. **Test Frontend**
-   - Visit: `https://your-vercel-url.vercel.app`
-   - Should see the Jharkhand Tourism website
-
-3. **Test Key Features**
-   - [ ] Browse destinations page loads
-   - [ ] AI Chatbot widget works (click button in bottom-right)
-   - [ ] API calls complete without CORS errors
-   - [ ] Images load correctly
-
-### Phase 6: Get Your Final URLs for Submission
-
-**Frontend (Public URL for users):**
-```
-https://your-vercel-app.vercel.app
+```bash
+node server.js
 ```
 
-**Backend API (for documentation):**
-```
-https://your-railway-app.railway.app/api/docs
+After deployment, wait until Railway reports that the service is running.
+
+Copy the generated Railway HTTPS URL.
+
+Example:
+
+```text
+https://your-project.up.railway.app
 ```
 
 ---
 
-## ✅ Quality Checklist Before Submission
+# Step 3: Verify the Backend
 
-- [ ] No "localhost" references in code
-- [ ] All environment variables set on hosting platforms
-- [ ] MongoDB Atlas is accessible from Railway
-- [ ] CORS is configured correctly
-- [ ] Frontend successfully connects to backend
-- [ ] Website is accessible via HTTPS
-- [ ] All features working (destinations, chatbot, travel planner)
-- [ ] Database has sample data loaded
+Open the following URL in a browser:
 
----
+```text
+https://your-project.up.railway.app/api/health
+```
 
-## 🔐 Important Security Reminders
+A successful response confirms that the backend is reachable.
 
-✅ **.env files are NOT committed** to GitHub (they're in .gitignore)
-✅ **Secrets are stored as environment variables** on hosting platforms
-✅ **No API keys** are visible in the codebase
-✅ **CORS is restricted** to your production domains
+Also verify the project-specific services:
 
----
+```text
+/api/chatbot/health
+/api/travel-planner/health
+```
 
-## 🆘 If Something Goes Wrong
+If an endpoint is not implemented in the deployed version, use only the routes available in the current project.
 
-### Backend won't start on Railway
-1. Check Railway logs (click service → Logs tab)
-2. Verify MongoDB URI is correct
-3. Ensure all required environment variables are set
+### Backend checklist
 
-### Frontend can't connect to backend
-1. Check browser console (F12) for errors
-2. Verify NEXT_PUBLIC_API_URL in Vercel settings
-3. Verify FRONTEND_URL in Railway settings
-4. Check that Railway backend is running (test /api/health)
-
-### Deployment not triggered
-1. Make sure code is pushed to GitHub
-2. Check GitHub connection in Vercel/Railway settings
-3. Manually trigger deployment from dashboard
+* [ ] Railway deployment completed
+* [ ] Backend URL generated
+* [ ] `/api/health` responds
+* [ ] MongoDB connection successful
+* [ ] Groq API configured
+* [ ] Required environment variables added
+* [ ] No secret is exposed in logs or source code
 
 ---
 
-## 📝 Estimated Total Time: 45-60 minutes
+# Step 4: Publish the Frontend
 
-Most of the time is waiting for builds to complete. You can start Phase 2 and 3 in parallel!
+The Next.js frontend will be deployed through Vercel.
 
-Good luck with your hackathon submission! 🎉
+### Vercel Setup
+
+1. Open Vercel.
+2. Sign in with GitHub.
+3. Select **Add New Project**.
+4. Import:
+
+```text
+Maniharika4508/Tourism-Jharkhand
+```
+
+5. Select **Next.js** if it is not automatically detected.
+6. Keep the repository root as the project root.
+7. Confirm the build configuration.
+8. Start the deployment.
+
+---
+
+# Step 5: Connect Frontend with Railway
+
+After getting the Railway backend URL, configure the Vercel environment variable:
+
+```env
+NEXT_PUBLIC_API_URL=https://your-project.up.railway.app
+```
+
+If the application uses the frontend URL variable, configure:
+
+```env
+NEXT_PUBLIC_APP_URL=https://your-project.vercel.app
+```
+
+Replace the example values with the actual deployed URLs.
+
+After saving environment variables, redeploy the Vercel project so the new configuration is applied.
+
+---
+
+# Step 6: Configure Production CORS
+
+The frontend and backend are hosted on different platforms.
+
+Therefore, the backend must allow requests from the deployed frontend.
+
+In Railway, configure:
+
+```env
+FRONTEND_URL=https://your-project.vercel.app
+```
+
+Then redeploy the backend.
+
+### Verify
+
+Open the Vercel website and test:
+
+* Destination data
+* Chatbot
+* Trip Planner
+* API-based features
+
+There should be no browser CORS errors.
+
+---
+
+# Step 7: Test the AI Chatbot
+
+The tourism chatbot uses Groq AI.
+
+### Environment Variable
+
+```env
+GROQ_API_KEY=your_groq_api_key
+```
+
+Test with questions such as:
+
+```text
+Tell me about Dassam Falls.
+```
+
+```text
+Tell me about Hundru Falls.
+```
+
+```text
+What are the famous places to visit in Jharkhand?
+```
+
+```text
+Plan a 3-day trip to Jharkhand.
+```
+
+Also test multilingual input:
+
+```text
+దస్సం జలపాతం గురించి చెప్పు.
+```
+
+```text
+झारखंड की जनजातीय संस्कृति के बारे में बताओ।
+```
+
+### Chatbot verification
+
+* [ ] Chatbot button appears
+* [ ] Message can be submitted
+* [ ] Backend receives the request
+* [ ] AI response is displayed
+* [ ] Follow-up questions work
+* [ ] Multilingual responses work
+* [ ] Unsupported information is not randomly invented
+
+---
+
+# Step 8: Test the Tourism Website
+
+Open the Vercel production URL and verify the main sections.
+
+### Website
+
+* [ ] Homepage
+* [ ] Navigation
+* [ ] Destination explorer
+* [ ] Waterfalls
+* [ ] Eco-tourism information
+* [ ] Cultural tourism
+* [ ] Local food
+* [ ] Handicrafts
+* [ ] Festivals
+* [ ] Images
+* [ ] Maps/location features
+* [ ] Responsive layout
+
+---
+
+# S
