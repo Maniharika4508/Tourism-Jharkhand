@@ -1,222 +1,543 @@
-# Jharkhand Tourism - Deployment Guide
+# Jharkhand Tourism – Deployment Guide
 
-## Project Overview
-- **Frontend**: Next.js application
-- **Backend**: Express.js API server
-- **Database**: MongoDB Atlas
-- **Hosting**: Vercel (frontend) + Railway (backend)
+## 1. Project Overview
 
----
+The Jharkhand Tourism project is a smart tourism web application designed to promote the eco-tourism and cultural tourism of Jharkhand.
 
-## Prerequisites
+### Technology Stack
 
-Before starting deployment, you'll need:
+* **Frontend:** Next.js, React, JavaScript, HTML, CSS
+* **Backend:** Node.js, Express.js
+* **Database:** MongoDB Atlas
+* **AI:** Groq API
+* **AI Model:** `openai/gpt-oss-20b`
+* **Payment:** Razorpay
+* **Frontend Hosting:** Vercel
+* **Backend Hosting:** Railway
+* **Source Code:** GitHub
 
-1. **GitHub Account** - Repository: https://github.com/PRATHAM10805/Tourism-Jharkhand
-2. **Vercel Account** - https://vercel.com (sign up with GitHub)
-3. **Railway Account** - https://railway.app (sign up with GitHub)
-4. **MongoDB Atlas Account** - https://www.mongodb.com/cloud/atlas (free tier available)
-5. **API Keys** (from .env file):
-   - GROQ_API_KEY
-   - GEMINI_API_KEY
-   - Razorpay keys (for payment)
+### Deployment Architecture
 
----
+```text
+                    ┌─────────────────────┐
+                    │       User          │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │       Vercel        │
+                    │   Next.js Frontend  │
+                    └──────────┬──────────┘
+                               │
+                         HTTPS API Calls
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │      Railway        │
+                    │ Node.js + Express   │
+                    │      Backend        │
+                    └──────┬───────┬──────┘
+                           │       │
+                 ┌─────────┘       └─────────┐
+                 ▼                           ▼
+        ┌─────────────────┐         ┌─────────────────┐
+        │  MongoDB Atlas  │         │    Groq API     │
+        │    Database     │         │   AI Chatbot    │
+        └─────────────────┘         └─────────────────┘
 
-## Step 1: MongoDB Atlas Setup
-
-MongoDB is already configured with credentials:
+                         │
+                         ▼
+                  ┌─────────────┐
+                  │  Razorpay   │
+                  │   Payment   │
+                  └─────────────┘
 ```
-Username: maniharika945_db_user
-Password: NnMs3xFkNLKvhCxr
-Cluster: cluster0.kgucvtd.mongodb.net
-Database: jharkhand_tourism
+
+---
+
+# 2. Prerequisites
+
+Before deployment, make sure you have:
+
+1. GitHub account
+2. GitHub repository containing the project
+3. Vercel account
+4. Railway account
+5. MongoDB Atlas account
+6. Groq API key
+7. Razorpay account and API keys if payment functionality is enabled
+
+### Repository
+
+The project repository is:
+
+`Maniharika4508/Tourism-Jharkhand`
+
+Do not add API keys, passwords, or database credentials to the GitHub repository.
+
+---
+
+# 3. MongoDB Atlas Configuration
+
+The project uses MongoDB Atlas for storing tourism-related application data.
+
+### Required Environment Variable
+
+```env
+MONGODB_URI=your_mongodb_connection_string
 ```
 
-The MongoDB URI is:
+The actual MongoDB connection string must be stored only in the deployment platform's environment variables.
+
+### MongoDB Atlas Settings
+
+1. Open MongoDB Atlas.
+2. Select the project cluster.
+3. Open **Database Access**.
+4. Verify the database user.
+5. Open **Network Access**.
+6. Add the required IP access configuration.
+7. Verify that the backend can connect to MongoDB.
+
+### Database
+
+The application uses:
+
+```text
+jharkhand_tourism
 ```
-mongodb+srv://maniharika945_db_user:NnMs3xFkNLKvhCxr@cluster0.kgucvtd.mongodb.net/jharkhand_tourism?appName=Cluster0
+
+Do not place the MongoDB username or password inside the README or source code.
+
+---
+
+# 4. Backend Deployment – Railway
+
+The backend is a Node.js and Express.js application.
+
+### Backend Location
+
+```text
+Tourism-Jharkhand/backend
 ```
 
-✅ **No changes needed** - MongoDB is already set up and accessible.
+### Step 1 – Create Railway Project
+
+1. Open Railway.
+2. Sign in using GitHub.
+3. Create a new project.
+4. Select **Deploy from GitHub Repo**.
+5. Select:
+
+```text
+Maniharika4508/Tourism-Jharkhand
+```
+
+6. Configure the service to use the backend directory.
 
 ---
 
-## Step 2: Deploy Backend to Railway
+## Step 2 – Backend Environment Variables
 
-### 2.1 Create Railway Account
-1. Go to https://railway.app
-2. Click "Start Project"
-3. Connect your GitHub account
-4. Authorize Railway to access your GitHub
+Add the following variables in Railway:
 
-### 2.2 Create a New Project
-1. Click "Create New Project"
-2. Select "Deploy from GitHub Repo"
-3. Find and select: `Tourism-Jharkhand`
-4. Select `Backend` as the deployment directory
+```env
+MONGODB_URI=your_mongodb_uri
+NODE_ENV=production
+PORT=5000
+GROQ_API_KEY=your_groq_api_key
+FRONTEND_URL=https://your-vercel-domain.vercel.app
+```
 
-### 2.3 Configure Environment Variables
-In Railway dashboard, go to your project:
+If Razorpay is enabled in the backend:
 
-1. Click on the **Backend** service
-2. Go to **Variables** tab
-3. Add these environment variables:
+```env
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+```
 
-| Variable | Value |
-|----------|-------|
-| `MONGODB_URI` | `mongodb+srv://maniharika945_db_user:NnMs3xFkNLKvhCxr@cluster0.kgucvtd.mongodb.net/jharkhand_tourism?appName=Cluster0` |
-| `PORT` | `3000` (Railway will auto-assign) |
-| `NODE_ENV` | `production` |
-| `JWT_SECRET` | Generate a random string (e.g., `your_random_jwt_secret_min_32_chars`) |
-| `FRONTEND_URL` | Will be updated after frontend deployment |
-| `GROQ_API_KEY` | `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` |
-| `GEMINI_API_KEY` | Get from Google Cloud Console |
-| `MAX_FILE_SIZE` | `10485760` |
-| `ALLOWED_IMAGE_TYPES` | `image/jpeg,image/jpg,image/png,image/gif,image/webp` |
+Use your actual values only inside Railway Environment Variables.
 
-### 2.4 Deploy
-1. Railway will automatically detect `backend/package.json`
-2. Set the start command: `node server.js`
-3. Click "Deploy"
-4. Wait for deployment to complete
-5. **Note the deployed URL** (e.g., `https://your-app.railway.app`)
+### Important
+
+Never commit:
+
+```text
+.env
+.env.local
+.env.production
+```
+
+to GitHub.
 
 ---
 
-## Step 3: Deploy Frontend to Vercel
+# 5. Backend Start Command
 
-### 3.1 Go to Vercel
-1. Visit https://vercel.com/dashboard
-2. Click "Add New..." → "Project"
-3. Select "Import Git Repository"
-4. Search for and select: `Tourism-Jharkhand`
+The backend uses Node.js and Express.
 
-### 3.2 Configure Project Settings
-1. **Framework Preset**: Select "Next.js"
-2. **Root Directory**: Leave as default (it's in root)
-3. **Build Command**: `npm run build` (should be auto-detected)
-4. **Start Command**: `npm start` (should be auto-detected)
-
-### 3.3 Set Environment Variables
-Before deploying, add these environment variables in Vercel:
-
-1. Go to **Settings** → **Environment Variables**
-2. Add:
-
-| Variable | Value |
-|----------|-------|
-| `NEXT_PUBLIC_API_URL` | `https://your-railway-app-url.railway.app` |
-| `NEXT_PUBLIC_APP_URL` | Will be provided by Vercel |
-
-*(Note: Replace `your-railway-app-url` with the actual Railway backend URL)*
-
-### 3.4 Deploy
-1. Click "Deploy"
-2. Vercel will build and deploy your Next.js app
-3. Wait for deployment to complete
-4. **Note the deployed URL** (e.g., `https://tourism-jharkhand.vercel.app`)
-
----
-
-## Step 4: Update CORS Configuration
-
-After both are deployed:
-
-### 4.1 Update Backend CORS
-1. Go to Railway dashboard
-2. Click on your Backend service
-3. Go to **Variables** tab
-4. Update `FRONTEND_URL` to: `https://your-vercel-url.vercel.app`
-5. Redeploy (trigger new deployment)
-
-### 4.2 Update Frontend API URL
-1. Go to Vercel dashboard
-2. Go to **Settings** → **Environment Variables**
-3. Update `NEXT_PUBLIC_API_URL` to the Railway backend URL
-4. Redeploy (Vercel will automatically redeploy)
-
----
-
-## Step 5: Test the Application
-
-### 5.1 Test Health Endpoints
-Check if services are running:
+Typical start command:
 
 ```bash
-# Backend health
-curl https://your-railway-app-url.railway.app/api/health
-
-# Frontend
-Visit https://your-vercel-url.vercel.app
+node server.js
 ```
 
-### 5.2 Test Core Features
-1. **Browse Destinations** - Should load places from MongoDB
-2. **AI Chatbot** - Try the chatbot widget (should connect to backend)
-3. **Travel Planner** - Test AI travel planner feature
-4. **Authentication** - Test login/signup if implemented
-5. **Payments** - Verify Razorpay integration
+For local development:
+
+```bash
+npm install
+npm run dev
+```
+
+The backend should start successfully before continuing with frontend deployment.
 
 ---
 
-## Troubleshooting
+# 6. Backend API Testing
 
-### Issue: Backend deployment fails
-- Check if all environment variables are set
-- Verify MongoDB URI is correct
-- Check logs in Railway dashboard
+After Railway deployment, Railway provides a public HTTPS URL.
 
-### Issue: Frontend can't connect to backend
-- Verify `NEXT_PUBLIC_API_URL` is set correctly in Vercel
-- Check CORS configuration in backend
-- Ensure backend is running and accessible
+For example:
 
-### Issue: "Cannot find module" error
-- Run `npm install` locally and commit `package-lock.json`
-- Ensure Node version is >=16
+```text
+https://your-backend-name.up.railway.app
+```
 
-### Issue: MongoDB connection timeout
-- Check MongoDB Atlas firewall settings
-- Ensure IP is whitelisted (0.0.0.0/0 for development)
-- Verify connection string is correct
+Test the health endpoint:
 
----
+```text
+https://your-backend-name.up.railway.app/api/health
+```
 
-## Final URLs
+The backend should return a successful response.
 
-After successful deployment:
+Other important API routes include:
 
-- **Frontend URL**: `https://your-vercel-app.vercel.app`
-- **Backend API**: `https://your-railway-app.railway.app/api`
-- **Database**: MongoDB Atlas (no public URL)
+```text
+/api/health
+/api/chatbot/health
+/api/travel-planner/health
+/api/docs
+```
+
+The exact availability of individual routes depends on the current project implementation.
 
 ---
 
-## Security Checklist
+# 7. Frontend Deployment – Vercel
 
-✅ `.env` files are in `.gitignore` and not committed
-✅ Environment variables configured in both platforms
-✅ MongoDB credentials secured (not in code)
-✅ API keys stored as environment variables
-✅ CORS properly configured for production domains
-✅ JWT secrets configured for authentication
+The frontend is a Next.js application.
+
+### Step 1 – Create Vercel Project
+
+1. Open Vercel.
+2. Sign in with GitHub.
+3. Select **Add New Project**.
+4. Import:
+
+```text
+Maniharika4508/Tourism-Jharkhand
+```
+
+5. Select **Next.js** as the framework.
+6. Keep the project root at the repository root.
+7. Verify the build configuration.
+8. Deploy the project.
 
 ---
 
-## Monitoring & Maintenance
+# 8. Frontend Environment Variables
 
-1. **Railway Dashboard**: Monitor backend logs and performance
-2. **Vercel Dashboard**: Monitor frontend builds and performance
-3. **MongoDB Atlas**: Monitor database usage and connections
-4. **Set up alerts** for deployment failures
+After Railway provides the backend URL, configure the frontend environment variable in Vercel.
+
+```env
+NEXT_PUBLIC_API_URL=https://your-backend-name.up.railway.app
+```
+
+If the project uses an application URL variable:
+
+```env
+NEXT_PUBLIC_APP_URL=https://your-vercel-domain.vercel.app
+```
+
+Replace the example URLs with the actual deployed URLs.
 
 ---
 
-## Support
+# 9. CORS Configuration
 
-If you encounter issues:
-1. Check Railway logs: Dashboard → Service → Logs
-2. Check Vercel logs: Dashboard → Project → Deployments → Logs
-3. Check MongoDB connection in Railway terminal
-4. Verify all environment variables are set correctly
+The frontend and backend are hosted separately.
+
+Therefore, the backend must allow requests from the deployed Vercel frontend.
+
+Set:
+
+```env
+FRONTEND_URL=https://your-vercel-domain.vercel.app
+```
+
+After changing the environment variable:
+
+1. Save the variable.
+2. Redeploy the Railway backend.
+3. Open the Vercel website.
+4. Test API-dependent features.
+
+---
+
+# 10. AI Chatbot Configuration
+
+The tourism chatbot uses the **Groq API**.
+
+### Required Variable
+
+```env
+GROQ_API_KEY=your_groq_api_key
+```
+
+The project uses:
+
+```text
+openai/gpt-oss-20b
+```
+
+The API key must be configured in Railway.
+
+It must **not** be placed directly inside frontend code.
+
+### Chatbot Testing
+
+Test questions such as:
+
+```text
+Tell me about Dassam Falls.
+```
+
+```text
+Tell me about Hundru Falls.
+```
+
+```text
+Plan a 3-day trip to Jharkhand.
+```
+
+```text
+झारखंड की जनजातीय संस्कृति के बारे में बताओ।
+```
+
+```text
+దస్సం జలపాతం గురించి చెప్పు.
+```
+
+The chatbot should answer using the project's tourism knowledge and should avoid inventing unsupported information.
+
+---
+
+# 11. AI Trip Planner Testing
+
+After deployment, test the AI Trip Planner using different inputs.
+
+Example:
+
+```text
+Duration: 3 Days
+Budget: Medium
+Interest: Waterfalls
+Activities: Nature and Culture
+```
+
+Verify that:
+
+* The request reaches the backend.
+* The AI service responds.
+* A suitable itinerary is generated.
+* The frontend displays the response correctly.
+
+---
+
+# 12. Razorpay Payment Configuration
+
+If Razorpay payment functionality is enabled, configure the required keys only through Railway environment variables.
+
+```env
+RAZORPAY_KEY_ID=your_key_id
+RAZORPAY_KEY_SECRET=your_key_secret
+```
+
+### Testing
+
+First use Razorpay test mode.
+
+Verify:
+
+1. Payment page opens.
+2. Test payment can be completed.
+3. Success response is received.
+4. Failure response is handled correctly.
+5. Backend verifies the payment response.
+
+For real payments, the Razorpay account must be properly configured for live transactions and the live credentials must be stored securely on the backend.
+
+---
+
+# 13. Deployment Testing Checklist
+
+After both services are deployed, test the following.
+
+### Frontend
+
+* [ ] Homepage loads
+* [ ] Navigation works
+* [ ] Destination pages load
+* [ ] Images load correctly
+* [ ] Dark green theme is displayed correctly
+* [ ] Responsive design works
+* [ ] Chatbot opens correctly
+* [ ] Trip Planner works
+
+### Backend
+
+* [ ] `/api/health` works
+* [ ] MongoDB connection works
+* [ ] Chatbot API works
+* [ ] Trip Planner API works
+* [ ] Required API routes respond correctly
+
+### Database
+
+* [ ] MongoDB Atlas connection works
+* [ ] Required tourism data is available
+* [ ] No database credentials are exposed publicly
+
+### Payment
+
+* [ ] Razorpay test checkout opens
+* [ ] Success flow works
+* [ ] Failure flow works
+
+---
+
+# 14. Common Deployment Problems
+
+## Frontend Cannot Connect to Backend
+
+Check:
+
+```env
+NEXT_PUBLIC_API_URL
+```
+
+Make sure it contains the correct Railway HTTPS URL.
+
+Then redeploy the frontend.
+
+---
+
+## CORS Error
+
+Check the Railway variable:
+
+```env
+FRONTEND_URL
+```
+
+It should contain the exact Vercel frontend URL.
+
+After changing it, redeploy the backend.
+
+---
+
+## Chatbot Not Working
+
+Check:
+
+```env
+GROQ_API_KEY
+```
+
+Also check Railway logs for API or backend errors.
+
+---
+
+## MongoDB Connection Error
+
+Check:
+
+* MongoDB URI
+* MongoDB username
+* MongoDB password
+* Network Access settings
+* Database user permissions
+* Railway environment variables
+
+Never place the password directly in source code.
+
+---
+
+## Images Not Loading
+
+Check:
+
+* Image paths
+* `public` directory
+* Next.js image configuration
+* Deployment logs
+* Browser console errors
+
+---
+
+## Build Failure
+
+Check:
+
+```bash
+npm install
+npm run build
+```
+
+Run the build locally before pushing deployment changes.
+
+Also make sure generated folders such as:
+
+```text
+.next/
+node_modules/
+```
+
+are not committed to GitHub.
+
+---
+
+# 15. GitHub Deployment Workflow
+
+The recommended development workflow is:
+
+```text
+Local Development
+       ↓
+Test Frontend
+       ↓
+Test Backend
+       ↓
+Test MongoDB
+       ↓
+Test AI Chatbot
+       ↓
+Git Commit
+       ↓
+Git Push
+       ↓
+GitHub
+       ↓
+Vercel + Railway
+       ↓
+Production Website
+```
+
+For future updates:
+
+```bash
+git add .
+git commit -m "Update Jharkhand Tourism project"
+git push ori
+```
