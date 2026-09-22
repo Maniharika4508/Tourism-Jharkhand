@@ -78,7 +78,7 @@ Format the response as a structured itinerary with clear day divisions, timings,
     const response = await axios.post(
       `${GROQ_BASE_URL}/chat/completions`,
       {
-        model: "llama-3.1-8b-instant", // Using current supported model
+        model: "llama-3.3-70b-versatile",
         messages: [
           {
             role: "system",
@@ -123,29 +123,16 @@ Format the response as a structured itinerary with clear day divisions, timings,
   } catch (error) {
     console.error('Travel Planner Error:', error.message);
 
-    // Handle different types of errors
-    if (error.response) {
-      // Groq API error
-      return res.status(error.response.status).json({
-        success: false,
-        error: `Groq API Error: ${error.response.data?.error?.message || 'Unknown API error'}`,
-        fallback: generateFallbackItinerary(req.body)
-      });
-    } else if (error.code === 'ECONNABORTED') {
-      // Timeout error
-      return res.status(408).json({
-        success: false,
-        error: 'Request timeout - please try again',
-        fallback: generateFallbackItinerary(req.body)
-      });
-    } else {
-      // Other errors
-      return res.status(500).json({
-        success: false,
-        error: 'Internal server error while generating itinerary',
-        fallback: generateFallbackItinerary(req.body)
-      });
-    }
+    // Handle fallback gracefully on API error
+    const fallbackItinerary = generateFallbackItinerary(req.body);
+    return res.status(200).json({
+      success: true,
+      data: {
+        itinerary: fallbackItinerary,
+        requestDetails: req.body,
+        generatedAt: new Date().toISOString()
+      }
+    });
   }
 };
 

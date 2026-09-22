@@ -1,5 +1,9 @@
-require('dotenv').config({ path: '.env' });
-require('dns').setServers(['8.8.8.8', '8.8.4.4']);
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+try {
+  require('dns').setServers(['8.8.8.8', '8.8.4.4']);
+} catch (err) {
+  // Custom DNS servers not supported or restricted in serverless environment
+}
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -19,12 +23,31 @@ const chatbotRoutes = require('./routes/chatbot');
 const travelPlannerRoutes = require('./routes/travelPlanner');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Chatbot service is now integrated directly with Gemini API
 console.log('🤖 Chatbot service integrated with Gemini API');
 
-// Connect to MongoDB
-connectDB();
+// Keep the process health check available even when MongoDB is unreachable.
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Jharkhand Tourism API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Database middleware to ensure connection on serverless requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('MongoDB connection middleware error:', err.message);
+    next();
+  }
+});
 
 // Security middleware with relaxed CSP for images
 app.use(helmet({
@@ -61,10 +84,11 @@ app.use(cors({
 // Compression middleware
 app.use(compression());
 
-// Rate limiting - more generous for development
+// Rate limiting - generous for development and serverless
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 500, // increased limit for development
+  validate: false,
   message: {
     success: false,
     message: 'Too many requests from this IP, please try again later.'
@@ -83,16 +107,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/travel-planner', travelPlannerRoutes);
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Jharkhand Tourism API is running',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
-  });
-});
 
 // API documentation endpoint
 app.get('/api/docs', (req, res) => {
@@ -153,7 +167,7 @@ app.get('/', (req, res) => {
 });
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: 'Route not found'
@@ -176,10 +190,15 @@ process.on('SIGTERM', () => {
   process.exit(0);
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Jharkhand Tourism API Server running on port ${PORT}`);
-  console.log(`📖 API Documentation: http://localhost:${PORT}/api/docs`);
-  console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
-  console.log(`🤖 Chatbot API: http://localhost:${PORT}/api/chatbot/health`);
-  console.log(`✈️ Travel Planner API: http://localhost:${PORT}/api/travel-planner/health`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Jharkhand Tourism API Server running on port ${PORT}`);
+    console.log(`📖 API Documentation: http://localhost:${PORT}/api/docs`);
+    console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
+    console.log(`🤖 Chatbot API: http://localhost:${PORT}/api/chatbot/health`);
+    console.log(`✈️ Travel Planner API: http://localhost:${PORT}/api/travel-planner/health`);
+  });
+}
+
+module.exports = app;
+

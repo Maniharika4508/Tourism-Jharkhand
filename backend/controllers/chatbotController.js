@@ -1,4 +1,5 @@
 const Groq = require('groq-sdk');
+const knowledge = require('../../data/chatbot-knowledge.json');
 
 // ===============================
 // CACHE
@@ -43,6 +44,7 @@ function getGroqClient() {
 const LANGUAGE_MAPPINGS = {
   en: 'English',
   hi: 'Hindi',
+  te: 'Telugu',
   bn: 'Bengali',
   or: 'Odia',
   ur: 'Urdu',
@@ -57,9 +59,14 @@ const LANGUAGE_MAPPINGS = {
 // LANGUAGE DETECTION
 // ===============================
 function detectLanguage(text) {
+  const teluguScriptPattern = /[\u0C00-\u0C7F]/;
   const hindiPattern = /[\u0900-\u097F]/;
   const bengaliPattern = /[\u0980-\u09FF]/;
   const odiaPattern = /[\u0B00-\u0B7F]/;
+
+  if (teluguScriptPattern.test(text)) {
+    return 'te';
+  }
 
   if (hindiPattern.test(text)) {
     return 'hi';
@@ -72,6 +79,14 @@ function detectLanguage(text) {
   if (odiaPattern.test(text)) {
     return 'or';
   }
+
+  const lower = text.toLowerCase();
+  const teluguRomanMarkers = ['gurinchi', 'cheppu', 'ekkada', 'undi', 'undhi', 'koncham', 'detail ga', 'entha'];
+  const hindiRomanMarkers = ['ke baare', 'kaha hai', 'batao', 'kitna', 'kaise', 'kab jana', 'mein hai', 'ke liye'];
+  const teluguScore = teluguRomanMarkers.filter(marker => lower.includes(marker)).length;
+  const hindiScore = hindiRomanMarkers.filter(marker => lower.includes(marker)).length;
+  if (teluguScore > hindiScore && teluguScore > 0) return 'te';
+  if (hindiScore > 0) return 'hi';
 
   return 'en';
 }
@@ -96,9 +111,9 @@ function canMakeAPICall() {
 // ===============================
 // CACHE
 // ===============================
-function getCachedResponse(message, language) {
+function getCachedResponse(message, language, conversationHistory = []) {
   const key =
-    `${message.toLowerCase().trim()}_${language}`;
+    `${message.toLowerCase().trim()}_${language}_${conversationHistory.slice(-4).map(turn => turn.content).join('|').toLowerCase()}`;
 
   const cached = API_CALL_CACHE.get(key);
 
@@ -113,9 +128,9 @@ function getCachedResponse(message, language) {
   return null;
 }
 
-function cacheResponse(message, language, response) {
+function cacheResponse(message, language, response, conversationHistory = []) {
   const key =
-    `${message.toLowerCase().trim()}_${language}`;
+    `${message.toLowerCase().trim()}_${language}_${conversationHistory.slice(-4).map(turn => turn.content).join('|').toLowerCase()}`;
 
   API_CALL_CACHE.set(key, {
     response,
@@ -133,13 +148,13 @@ function cacheResponse(message, language, response) {
 // ===============================
 // GROQ API
 // ===============================
-const callGroqAPI = async (message, language) => {
+const callGroqAPI = async (message, language, conversationHistory = []) => {
 
   const client = getGroqClient();
 
   // Check cache
   const cachedResponse =
-    getCachedResponse(message, language);
+    getCachedResponse(message, language, conversationHistory);
 
   if (cachedResponse) {
     return cachedResponse;
@@ -155,30 +170,7 @@ const callGroqAPI = async (message, language) => {
   const languageName =
     LANGUAGE_MAPPINGS[language] || 'English';
 
-  const systemPrompt = `
-You are an AI tourism assistant for Jharkhand, India.
-
-You help users with:
-
-- Tourist destinations
-- Waterfalls
-- Wildlife
-- Temples
-- Tribal culture
-- Festivals
-- Local food
-- Transportation
-- Accommodation
-- Travel plans
-- Best time to visit
-
-IMPORTANT:
-- Answer in ${languageName}.
-- Keep answers simple and useful.
-- Give 2 to 5 sentences.
-- Focus on Jharkhand tourism.
-- If the question is unrelated, politely bring the conversation back to Jharkhand tourism.
-`;
+  const systemPrompt = `You are the Jharkhand Tourism assistant. Answer in ${languageName}, preserving the user's language even when it is Roman Telugu, Telugu-English, Roman Hindi or Hindi-English. Use the verified project knowledge below and the conversation. Give useful verified facts first: explain what the destination is, its verified location or setting, notable features, tourism significance, and verified activities when available. If one specific fact is absent, omit that fact; do not turn the whole answer into a refusal. Never invent a destination, distance, price, timing, facility, route, safety claim, event date or wildlife sighting. For an unavailable detail, use one short sentence such as "I do not have a verified figure for that detail." Resolve follow-up words such as "it", "there" and "that place" from conversation history. For trip plans, use only listed destinations and label suggestions as suggestions. Keep answers natural, practical and concise (3-6 sentences). If unrelated to Jharkhand tourism, politely explain that your focus is Jharkhand tourism.\n\nVERIFIED PROJECT KNOWLEDGE:\n${JSON.stringify(knowledge)}`;
 
   try {
 
@@ -192,17 +184,18 @@ IMPORTANT:
             role: 'system',
             content: systemPrompt
           },
+          ...conversationHistory.slice(-8),
           {
             role: 'user',
             content: message
           }
         ],
 
-        model: 'llama-3.1-8b-instant',
+        model: 'openai/gpt-oss-20b',
 
-        temperature: 0.7,
+        temperature: 0.2,
 
-        max_tokens: 512,
+        max_tokens: 700,
 
         stream: false
       });
@@ -222,7 +215,8 @@ IMPORTANT:
     cacheResponse(
       message,
       language,
-      finalResponse
+      finalResponse,
+      conversationHistory
     );
 
     console.log('✅ Groq response received');
@@ -244,15 +238,67 @@ IMPORTANT:
 // LOCAL FALLBACK
 // ===============================
 const generateIntelligentFallback =
-  async (message, language) => {
+  async (message, language, conversationHistory = []) => {
 
     const text =
       message.toLowerCase();
+    const previousUserMessage = [...conversationHistory].reverse().find(turn => turn.role === 'user')?.content || '';
+    const contextText = `${previousUserMessage} ${text}`.toLowerCase();
+
+    if (contextText.includes('how far') || contextText.includes('distance')) {
+      return language === 'hi'
+        ? 'इस स्थान की सत्यापित दूरी प्रोजेक्ट डेटा में उपलब्ध नहीं है। कृपया अपना शुरुआती स्थान बताएं और यात्रा से पहले आधिकारिक मानचित्र या पर्यटन स्रोत से वर्तमान सड़क दूरी जांचें।'
+        : 'The project does not contain a verified distance for that destination. Please share your starting point and check current map or official tourism information before travelling.';
+    }
+
+    if (language === 'te') {
+      if (text.includes('dassam')) return 'దశమ్ జలపాతం ఝార్ఖండ్‌లోని ముఖ్యమైన జలపాత గమ్యస్థానంగా ఈ ప్రాజెక్ట్‌లో ఉంది. ఇది జలపాతాలు మరియు ప్రకృతి పర్యాటకంపై ఆసక్తి ఉన్నవారికి ఉపయోగకరమైన ప్రదేశం. ప్రాజెక్ట్‌లో జిల్లా, ఎత్తు, ప్రవేశ రుసుము, సమయాలు లేదా ప్రస్తుత రాకపోక వివరాలు ధృవీకరించబడలేదు.';
+      if (text.includes('hundru')) return 'హుండ్రూ జలపాతం ఝార్ఖండ్‌లోని రాంచీ జిల్లాలో సుబర్ణరేఖ నదిపై ఉంది. ప్రాజెక్ట్ సమాచారం ప్రకారం ఇది 98 మీటర్ల ఎత్తైన జలపాతం; రాళ్ల నిర్మాణాలు, సహజ కొలను మరియు అందమైన దృశ్యాలు ప్రత్యేకతలు. ఫోటోగ్రఫీ, పిక్నిక్, రాక్ క్లైంబింగ్ మరియు ఈతను ప్రాజెక్ట్ కార్యకలాపాలుగా పేర్కొంటుంది.';
+      if (text.includes('waterfall') || text.includes('falls')) return 'ఝార్ఖండ్ పర్యాటక ప్రాజెక్ట్ హుండ్రూ, దశమ్, భాటిండా, ఉస్రీ, లోధ్, పంచ్‌ఘాఘ్, హిర్ని, తామసిన్ మరియు మోతీ ఝర్నా వంటి జలపాతాలను జాబితా చేస్తుంది. మీకు ఏ జలపాతం గురించి వివరాలు కావాలో చెప్పండి.';
+      if (text.includes('food')) return 'ప్రాజెక్ట్‌లో ఝార్ఖండ్‌కు చెందిన ధుస్కా, ఘుగ్ని, లిట్టీ చోఖా, చిల్కా రోటీ, అర్సా రోటీ మరియు రుగ్రా వంటకాలు పేర్కొనబడ్డాయి.';
+      return 'నేను ఝార్ఖండ్ పర్యాటక ప్రాంతాలు, జలపాతాలు, దేవాలయాలు, వన్యప్రాణులు, గిరిజన సంస్కృతి, స్థానిక ఆహారం మరియు ప్రయాణ ప్రణాళికల గురించి సహాయం చేయగలను.';
+    }
+
+    if (text.includes('dassam')) {
+      return 'Dassam Falls is listed in this project as a notable Jharkhand waterfall. The project does not contain verified distance, entry fee, opening hours or facility details, so I cannot safely invent them.';
+    }
+
+    if (/^(hi|hello|hey|namaste)\b/.test(text)) {
+      return 'Hello! I can help with Jharkhand destinations, waterfalls, temples, wildlife, culture, food and trip planning.';
+    }
+
+    if (text.includes('best places') || text.includes('places to visit') || text.includes('destinations')) {
+      return 'The project highlights Netarhat, Hundru Falls, Baidyanath Temple, Trikut Hill, Parasnath Hill, Canary Hill, Betla National Park and Dalma Wildlife Sanctuary. The best choice depends on whether you prefer waterfalls, hills, pilgrimage, wildlife or culture. I can build a route around your available days and starting point.';
+    }
+
+    if (text.includes('3 day') || text.includes('three day') || text.includes('itinerary') || text.includes('trip plan')) {
+      return 'Suggested 3-day plan: Day 1 explore the Ranchi-area waterfall circuit with Hundru Falls; Day 2 visit Baidyanath Temple and Trikut Hill near Deoghar; Day 3 choose Netarhat for hill scenery or a wildlife destination such as Betla National Park. This is a project-based suggestion, so confirm transport, opening hours and current access before travelling.';
+    }
+
+    if (text.includes('tribal') || text.includes('culture')) {
+      return 'The project highlights Jharkhand tribal culture through Sohrai and Khovar art, Munda cultural homestays, traditional stories, local food and community-led experiences. Festivals mentioned in the project include Sarhul, Karma and Sohrai. Festival dates and event arrangements are not stored here, so check official local information.';
+    }
+
+    if (text.includes('best time') || text.includes('when to visit') || text.includes('season')) {
+      return 'The project gives destination-specific periods rather than one verified statewide best time: Netarhat and Parasnath Hill are listed with Oct–Mar, while several waterfalls are listed with Jul–Feb. Choose based on the destinations you want, and check current weather and access before travelling.';
+    }
+
+    if (text.includes('betla') || text.includes('dalma')) {
+      return 'The project lists Betla National Park and Dalma Wildlife Sanctuary as Jharkhand wildlife destinations. It does not contain verified current safari timings, fees, rules or animal sightings, so please check official sources before planning.';
+    }
 
     // =========================
     // HINDI
     // =========================
     if (language === 'hi') {
+
+      if (text.includes('dassam')) {
+        return 'दशम फॉल्स को यह प्रोजेक्ट झारखंड के महत्वपूर्ण जलप्रपात गंतव्य के रूप में सूचीबद्ध करता है। यह प्रकृति और जलप्रपात देखने में रुचि रखने वाले यात्रियों के लिए उपयोगी स्थान है। प्रोजेक्ट में इसका जिला, ऊंचाई, प्रवेश शुल्क, समय और वर्तमान पहुंच की सत्यापित जानकारी उपलब्ध नहीं है।';
+      }
+
+      if (text.includes('hundru')) {
+        return 'हुंडरू फॉल्स झारखंड के रांची जिले में सुवर्णरेखा नदी पर स्थित है। प्रोजेक्ट के अनुसार यह 98 मीटर ऊंचा जलप्रपात है और यहाँ चट्टानी संरचनाएँ, प्राकृतिक ताल और सुंदर दृश्य प्रमुख हैं। प्रोजेक्ट फोटोग्राफी, पिकनिक, रॉक क्लाइम्बिंग और तैराकी को गतिविधियों के रूप में सूचीबद्ध करता है।';
+      }
 
       if (
         text.includes('waterfall') ||
@@ -357,6 +403,39 @@ const generateIntelligentFallback =
     return 'I can help you explore Jharkhand! Ask me about tourist destinations, waterfalls, temples, wildlife, tribal culture, local food, festivals or travel plans.';
 };
 
+const needsGroundedFallback = (question, response, language) => {
+  const text = question.toLowerCase();
+  const answer = response.toLowerCase();
+  const hasTeluguScript = Array.from(response).some(char => {
+    const code = char.codePointAt(0) || 0;
+    return code >= 0x0C00 && code <= 0x0C7F;
+  });
+  const hasHindiScript = Array.from(response).some(char => {
+    const code = char.codePointAt(0) || 0;
+    return code >= 0x0900 && code <= 0x097F;
+  });
+  if (language === 'te' && !hasTeluguScript) return true;
+  if (language === 'hi' && !hasHindiScript) return true;
+
+  if (text.includes('best time') || text.includes('when to visit') || text.includes('season')) {
+    return !/(netarhat|parasnath|oct|jul|waterfall)/i.test(answer) || /distance to dassam|distance to hundru/i.test(answer);
+  }
+
+  if (text.includes('3 day') || text.includes('three day') || text.includes('itinerary') || text.includes('trip plan')) {
+    return /\b(drive|driving|trek|trekking|picnic|restaurant|hotel|budget|cost|ticket)\b/i.test(answer);
+  }
+
+  if (text.includes('tribal') || text.includes('culture')) {
+    return /\b(oraon|ho people|weaving|tour operators|tribal villages|daily rituals|craft workshops)\b/i.test(answer);
+  }
+
+  if (text.includes('food') || text.includes('cuisine') || text.includes('eat')) {
+    return true;
+  }
+
+  return false;
+};
+
 // ===============================
 // SEND MESSAGE
 // ===============================
@@ -366,8 +445,15 @@ const sendMessage = async (req, res) => {
 
     const {
       message,
-      language
+      language,
+      conversationHistory
     } = req.body;
+
+    const safeConversationHistory = Array.isArray(conversationHistory)
+      ? conversationHistory
+        .filter(turn => turn && (turn.role === 'user' || turn.role === 'assistant') && typeof turn.content === 'string')
+        .slice(-8)
+      : [];
 
     // Validate
     if (
@@ -405,7 +491,8 @@ const sendMessage = async (req, res) => {
       response =
         await callGroqAPI(
           message,
-          detectedLanguage
+          detectedLanguage,
+          safeConversationHistory
         );
 
       console.log(
@@ -430,12 +517,17 @@ const sendMessage = async (req, res) => {
       response =
         await generateIntelligentFallback(
           message,
-          detectedLanguage
+          detectedLanguage,
+          safeConversationHistory
         );
 
       console.log(
         '✅ Local fallback success'
       );
+    }
+
+    if (needsGroundedFallback(message, response, detectedLanguage)) {
+      response = await generateIntelligentFallback(message, detectedLanguage, safeConversationHistory);
     }
 
     // =========================
@@ -501,7 +593,7 @@ const healthCheck = async (req, res) => {
           'configured',
 
         model:
-          'llama-3.1-8b-instant',
+          'openai/gpt-oss-20b',
 
         multilingualSupport:
           true,

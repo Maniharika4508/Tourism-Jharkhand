@@ -53,7 +53,8 @@ export default function DestinationsPage() {
   const fetchImageForDestination = async (destinationId: string): Promise<string | null> => {
     try {
       console.log(`🔍 Fetching image for destination: "${destinationId}"`);
-      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/images/place-name/${encodeURIComponent(destinationId)}`;
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const url = `${baseUrl}/api/images/place-name/${encodeURIComponent(destinationId)}`;
       console.log(`📡 Making request to: ${url}`);
       
       const response = await fetch(url);

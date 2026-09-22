@@ -36,101 +36,56 @@ router.get('/place-name/:placeName', async (req, res) => {
   try {
     const { placeName } = req.params;
     console.log(`🖼️ Images: Fetching image for place: "${placeName}"`);
-    
-    // First try to get from MongoDB
-    let imageFile = null;
-    let imagePath = null;
-    
-    try {
-      const Place = require('../models/Place');
-      const place = await Place.findOne({
-        $or: [
-          { name: { $regex: placeName, $options: 'i' } },
-          { name: { $regex: placeName.replace(/[-\s]/g, ''), $options: 'i' } }
-        ]
-      });
-      
-      if (place && place.imageName) {
-        imageFile = place.imageName;
-        imagePath = path.join(__dirname, '..', '..', 'db', 'arvrPics', imageFile);
-        console.log(`🖼️ Images: Found image in MongoDB: ${imageFile}`);
-      }
-    } catch (dbError) {
-      console.log(`🖼️ Images: MongoDB query failed, using fallback: ${dbError.message}`);
-    }
-    
-    // If not found in MongoDB, try fallback data
-    if (!imageFile) {
-      try {
-        const fallbackData = require('../utils/fallback-data');
-        imageFile = fallbackData.findImageName(placeName);
-        if (imageFile) {
-          imagePath = path.join(__dirname, '..', '..', 'db', 'arvrPics', imageFile);
-          console.log(`🖼️ Images: Found image via fallback: ${imageFile}`);
-        }
-      } catch (fallbackError) {
-        console.log(`🖼️ Images: Fallback search failed: ${fallbackError.message}`);
-      }
-    }
-    
-    // If still not found, try direct file search
-    if (!imageFile) {
-      const imagesDir = path.join(__dirname, '..', '..', 'db', 'arvrPics');
-      
-      if (fs.existsSync(imagesDir)) {
-        const files = fs.readdirSync(imagesDir);
-        imageFile = files.find(file => {
-          const fileName = path.parse(file).name.toLowerCase();
-          const searchName = placeName.toLowerCase();
-          return fileName === searchName || fileName.includes(searchName) || searchName.includes(fileName);
-        });
-        
-        if (imageFile) {
-          imagePath = path.join(imagesDir, imageFile);
-          console.log(`🖼️ Images: Found image via direct search: ${imageFile}`);
-        }
-      }
-    }
-    
-    if (!imageFile || !imagePath) {
-      console.log(`🖼️ Images: No image found for "${placeName}"`);
-      return res.status(404).json({
-        success: false,
-        message: `No image found for place: ${placeName}`
-      });
-    }
-    
-    // Check if file exists
-    if (!fs.existsSync(imagePath)) {
-      console.log(`🖼️ Images: Image file not found: ${imagePath}`);
-      return res.status(404).json({
-        success: false,
-        message: `Image file not found: ${imageFile}`
-      });
-    }
-    
-    console.log(`🖼️ Images: Serving image: ${imageFile}`);
-    
-    // Set appropriate content type
-    const ext = path.extname(imageFile).toLowerCase();
-    const contentType = ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 
-                       ext === '.png' ? 'image/png' : 
-                       ext === '.gif' ? 'image/gif' : 'image/jpeg';
-    
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
-    
-    // Stream the file
-    const fileStream = fs.createReadStream(imagePath);
-    fileStream.pipe(res);
-    
-  } catch (error) {
-    console.error('🖼️ Images: Error serving image by place name:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-      error: error.message
+
+    const knownImages = [
+      "Angrabari Temple.png", "Anjan Dham.jpg", "Baidyanath Temple.jpg", "Barso Pani Cave.jpeg",
+      "Basukinath Mandir.jpg", "Bhatinda Falls.jpg", "Canary Hill.jpeg", "Chandil Dam.jpg",
+      "Damakol Waterfall.jpeg", "Dharni Pahar.jpg", "Dimna Lake.jpg", "Geological Museum.jpg",
+      "Harnav Dam.jpg", "Hirni Falls.jpg", "Hundru Falls.jpg", "Jagannath Mandir.jpg",
+      "Jawaharlal Nehru Biological Park.png", "Jubilee Park.jpg", "Kelaghagh Dam.jpg",
+      "Koel River Front.jpg", "Lawapani waterfall.jpg", "Lodh Falls.png", "Mahadebsal Temple.jpg",
+      "Massanjore Dam.jpg", "Miclai Ghat.jpg", "Moti Jharna Waterfall.jpg", "Nagaruntari Temple.jpg",
+      "Navratangarh Fort.jpg", "Netarhat Hills.jpg", "Palamu Fort.jpg", "Panchghagh Falls.jpg",
+      "Parasnath Hill.jpg", "Patratu Valley.jpg", "Sankh River.jpg", "Sukhaldari Falls.jpeg",
+      "Tamasin Waterfall.jpg", "Tenughat Dam.jpg", "Trikut Hill.jpg", "Usri Falls.JPG",
+      "Vrindaha Waterfalls.jpg"
+    ];
+
+    const cleanPlaceName = placeName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const matchedFile = knownImages.find(file => {
+      const cleanFileName = path.parse(file).name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      return cleanFileName === cleanPlaceName || cleanFileName.includes(cleanPlaceName) || cleanPlaceName.includes(cleanFileName);
     });
+
+    if (matchedFile) {
+      console.log(`🖼️ Images: Matched image "${matchedFile}" for "${placeName}"`);
+      const publicPath = path.join(__dirname, '..', '..', 'public', 'arvrPics', matchedFile);
+      const dbPath = path.join(__dirname, '..', '..', 'db', 'arvrPics', matchedFile);
+
+      if (fs.existsSync(publicPath)) {
+        const ext = path.extname(matchedFile).toLowerCase();
+        const contentType = ext === '.png' ? 'image/png' : ext === '.gif' ? 'image/gif' : 'image/jpeg';
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+        return fs.createReadStream(publicPath).pipe(res);
+      } else if (fs.existsSync(dbPath)) {
+        const ext = path.extname(matchedFile).toLowerCase();
+        const contentType = ext === '.png' ? 'image/png' : ext === '.gif' ? 'image/gif' : 'image/jpeg';
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+        return fs.createReadStream(dbPath).pipe(res);
+      } else {
+        return res.redirect(302, `/arvrPics/${encodeURIComponent(matchedFile)}`);
+      }
+    }
+
+    return res.status(404).json({
+      success: false,
+      message: `No image found for place: ${placeName}`
+    });
+  } catch (error) {
+    console.error('🖼️ Images error:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 

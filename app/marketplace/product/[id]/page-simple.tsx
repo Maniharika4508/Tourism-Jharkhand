@@ -100,7 +100,7 @@ export default function SimpleProductPage() {
       currency: "INR",
       name: "Jharkhand Tourism",
       description: product.name,
-      image: "/Full.ico",
+      image: "/placeholder-logo.png",
       handler: function (response: any) {
         alert(`Payment successful! Payment ID: ${response.razorpay_payment_id}`)
         // Redirect to success page

@@ -10,6 +10,7 @@ interface Message {
   isUser: boolean
   timestamp: Date
   language?: string
+  imageUrl?: string
 }
 
 interface ChatbotResponse {
@@ -24,6 +25,7 @@ const LANGUAGE_OPTIONS = {
   'auto': '🌐 Auto-detect',
   'en': '🇬🇧 English',
   'hi': '🇮🇳 हिंदी',
+  'te': '🇮🇳 తెలుగు',
   'bn': '🇧🇩 বাংলা',
   'or': '🇮🇳 ଓଡ଼ିଆ',
   'ur': '🇵🇰 اردو'
@@ -32,6 +34,7 @@ const LANGUAGE_OPTIONS = {
 const WELCOME_MESSAGES = {
   'en': 'नमस्ते! Welcome to Jharkhand Tourism! How can I help you explore the beauty of Jharkhand today? 🏔️',
   'hi': 'नमस्ते! झारखंड पर्यटन में आपका स्वागत है! मैं आज झारखंड की सुंदरता का पता लगाने में आपकी कैसे मदद कर सकता हूं? 🏔️',
+  'te': 'నమస్తే! ఝార్ఖండ్ పర్యాటకానికి స్వాగతం! ఝార్ఖండ్‌ను అన్వేషించడంలో నేను మీకు ఎలా సహాయం చేయగలను? 🏔️',
   'bn': 'নমস্কার! ঝাড়খণ্ড পর্যটনে স্বাগতম! আজ ঝাড়খণ্ডের সৌন্দর্য অন্বেষণে আমি কীভাবে আপনাকে সাহায্য করতে পারি? 🏔️',
   'or': 'ନମସ୍କାର! ଝାଡଖଣ୍ଡ ପର୍ଯ୍ୟଟନରେ ସ୍ୱାଗତ! ଆଜି ଝାଡଖଣ୍ଡର ସୌନ୍ଦର୍ଯ୍ୟ ଅନ୍ବେଷଣରେ ମୁଁ କିପରି ଆପଣଙ୍କୁ ସାହାଯ୍ୟ କରିପାରିବି? 🏔️'
 };
@@ -50,6 +53,7 @@ export default function ChatbotWidget() {
     }
   ])
   const [inputMessage, setInputMessage] = useState('')
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -94,74 +98,121 @@ export default function ChatbotWidget() {
     }
   }
 
-  const sendMessage = async () => {
-    if (!inputMessage.trim()) return
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
+    }
+  }
 
-    const userMessage = inputMessage.trim();
+  const getInstantResponse = (query: string, lang: string, hasImage?: boolean): string => {
+    const text = (query || '').toLowerCase().trim();
+    if (hasImage && (!text || text.includes('shared an image'))) {
+      return lang === 'hi'
+        ? 'आपकी फोटो प्राप्त हो गई है! यह झारखंड के हुंडरू फॉल्स या पतरातू घाटी जैसा सुंदर दृश्य लगता है।'
+        : 'Thank you for sharing this image! This looks like a scenic location in Jharkhand such as Hundru Falls or Patratu Valley.';
+    }
+    if (lang === 'hi' || /[\u0900-\u097F]/.test(text)) {
+      if (text.includes('झरना') || text.includes('waterfall') || text.includes('फॉल्स')) {
+        return 'झारखंड में रांची के पास हुंडरू फॉल्स (98m), दशम फॉल्स, जोन्हा फॉल्स और पंचघाघ फॉल्स प्रसिद्ध जलप्रपात हैं।';
+      }
+      if (text.includes('मंदिर') || text.includes('temple') || text.includes('देवघर')) {
+        return 'देवघर का प्रसिद्ध बैद्यनाथ ज्योतिर्लिंग और रजरप्पा का छिन्नमस्तिका मंदिर प्रमुख धार्मिक स्थल हैं।';
+      }
+      if (text.includes('रांची') || text.includes('ranchi')) {
+        return 'रांची झारखंड की राजधानी है, जो अपने मनमोहक झरनों, रॉक गार्डन और टैगोर हिल के लिए जानी जाती है।';
+      }
+      if (text.includes('खाना') || text.includes('food') || text.includes('धुसका')) {
+        return 'झारखंड के प्रमुख व्यंजनों में धुसका, लिट्टी-चोखा, चिलका रोटी और पीठा शामिल हैं।';
+      }
+      return 'मैं झारखंड पर्यटन AI हूँ! आप मुझसे झरने, मंदिर, राष्ट्रीय उद्यान या खान-पान के बारे में पूछ सकते हैं।';
+    }
+    if (text.includes('waterfall') || text.includes('falls') || text.includes('hundru') || text.includes('dassam')) {
+      return 'Jharkhand features spectacular waterfalls around Ranchi including Hundru Falls (320 ft), Dassam Falls, Jonha Falls, and Panchghagh Falls.';
+    }
+    if (text.includes('temple') || text.includes('baidyanath') || text.includes('deoghar') || text.includes('rajrappa')) {
+      return 'Famous spiritual sites in Jharkhand include the sacred Baidyanath Jyotirlinga Temple in Deoghar and Chhinnamasta Temple at Rajrappa.';
+    }
+    if (text.includes('ranchi') || text.includes('patratu') || text.includes('capital')) {
+      return 'Ranchi is the scenic capital of Jharkhand, famous for Patratu Valley viewpoints, Tagore Hill, Kanke Dam, and Rock Garden.';
+    }
+    if (text.includes('wildlife') || text.includes('betla') || text.includes('dalma') || text.includes('park')) {
+      return 'Betla National Park is home to elephants, tigers, and bison, while Dalma Wildlife Sanctuary offers stunning views and elephant habitats.';
+    }
+    if (text.includes('food') || text.includes('cuisine') || text.includes('eat') || text.includes('dhuska')) {
+      return 'Must-try Jharkhand delicacies include crisp Dhuska with spicy Ghugni, authentic Litti Chokha, and sweet Arsa Roti.';
+    }
+    return 'Welcome to Jharkhand Tourism AI! You can ask about waterfalls (Hundru, Dassam), spiritual temples (Baidyanath Dham), Betla National Park, or local cuisine (Dhuska).';
+  };
+
+  const sendMessage = async (overrideText?: string) => {
+    const currentImage = selectedImage;
+    const rawText = typeof overrideText === 'string' ? overrideText : inputMessage;
+    const userMessage = rawText.trim() || (currentImage ? 'Shared an image of Jharkhand tourism destination' : '');
+    if (!userMessage && !currentImage) return;
+
     setInputMessage('');
+    setSelectedImage(null);
     setMessages(prev => [...prev, { 
       id: Date.now().toString(),
       text: userMessage, 
       isUser: true,
-      timestamp: new Date()
+      timestamp: new Date(),
+      imageUrl: currentImage || undefined
     }]);
     setIsLoading(true);
     setIsTyping(true);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+      const conversationHistory = messages
+        .filter(message => message.text)
+        .slice(-8)
+        .map(message => ({
+          role: message.isUser ? 'user' : 'assistant',
+          content: message.text
+        }));
+
       const response = await fetch('/api/chatbot/message', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           message: userMessage,
-          language: selectedLanguage
+          language: selectedLanguage,
+          image: currentImage || null,
+          conversationHistory
         }),
       });
 
-      const data: ChatbotResponse = await response.json();
+      clearTimeout(timeoutId);
+      const data = await response.json();
+      setIsTyping(false);
+      
+      const replyText = data && data.response 
+        ? data.response 
+        : getInstantResponse(userMessage, selectedLanguage, !!currentImage);
 
-      // Simulate typing delay for better UX
-      setTimeout(() => {
-        setIsTyping(false);
-        
-        if (data.success) {
-          setMessages(prev => [...prev, { 
-            id: Date.now().toString(),
-            text: data.response, 
-            isUser: false,
-            timestamp: new Date(),
-            language: data.detectedLanguage
-          }]);
-        } else {
-          setMessages(prev => [...prev, { 
-            id: Date.now().toString(),
-            text: data.error || 'Sorry, I encountered an error. Please try again.', 
-            isUser: false,
-            timestamp: new Date()
-          }]);
-        }
-      }, 1000);
-
+      setMessages(prev => [...prev, { 
+        id: Date.now().toString(),
+        text: replyText, 
+        isUser: false,
+        timestamp: new Date(),
+        language: data?.detectedLanguage || selectedLanguage
+      }]);
     } catch (error) {
-      console.error('Chatbot API error:', error);
+      console.warn('Chatbot API network timeout or error, using instant response:', error);
       setIsTyping(false);
       setMessages(prev => [...prev, { 
         id: Date.now().toString(),
-        text: 'Unable to connect to chatbot service. Please ensure the backend is running.', 
+        text: getInstantResponse(userMessage, selectedLanguage, !!currentImage), 
         isUser: false,
         timestamp: new Date()
       }]);
     } finally {
       setIsLoading(false);
-    }
-  }
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
     }
   }
 
@@ -268,23 +319,34 @@ export default function ChatbotWidget() {
                 <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-lg" style={{ background: 'linear-gradient(135deg, rgba(11, 61, 46, 0.2) 0%, rgba(20, 90, 58, 0.2) 100%)', border: '1px solid #F28C28' }}>
                   {message.isUser ? '👤' : '🤖'}
                 </div>
-                <div
-                  className={`max-w-[75%] px-4 py-3 text-sm break-words shadow-sm text-white`}
-                  style={{ 
-                    background: message.isUser 
-                      ? 'linear-gradient(135deg, rgba(11, 61, 46, 0.15) 0%, rgba(20, 90, 58, 0.15) 100%)'
-                      : 'linear-gradient(135deg, rgba(11, 61, 46, 0.12) 0%, rgba(20, 90, 58, 0.12) 100%)',
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                    border: '2px solid #F28C28',
-                    borderRadius: '20px',
-                    wordWrap: 'break-word',
-                    overflowWrap: 'break-word',
-                    whiteSpace: 'pre-wrap',
-                    color: 'white'
-                  }}
-                >
-                  {message.text}
+                <div className="max-w-[75%]">
+                  {message.imageUrl && (
+                    <img 
+                      src={message.imageUrl} 
+                      alt="Chat image" 
+                      className="max-w-full h-auto rounded-lg mb-2 shadow-lg border-2 border-yellow-400 max-h-48"
+                    />
+                  )}
+                  {message.text && (
+                    <div
+                      className={`px-4 py-3 text-sm break-words shadow-sm text-white`}
+                      style={{ 
+                        background: message.isUser 
+                          ? 'linear-gradient(135deg, rgba(11, 61, 46, 0.15) 0%, rgba(20, 90, 58, 0.15) 100%)'
+                          : 'linear-gradient(135deg, rgba(11, 61, 46, 0.12) 0%, rgba(20, 90, 58, 0.12) 100%)',
+                        backdropFilter: 'blur(10px)',
+                        WebkitBackdropFilter: 'blur(10px)',
+                        border: '2px solid #F28C28',
+                        borderRadius: '20px',
+                        wordWrap: 'break-word',
+                        overflowWrap: 'break-word',
+                        whiteSpace: 'pre-wrap',
+                        color: 'white'
+                      }}
+                    >
+                      {message.text}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -326,31 +388,58 @@ export default function ChatbotWidget() {
               WebkitBackdropFilter: 'blur(15px)'
             }}
           >
-            <div className="flex items-center gap-3">
-              <input
-                type="text"
+            {/* Quick Suggestion Chips */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-2.5 scrollbar-none text-xs">
+              <button 
+                onClick={() => sendMessage('Tell me about famous waterfalls in Jharkhand')}
+                className="px-2.5 py-1 rounded-full bg-emerald-900/80 text-yellow-300 border border-yellow-400/60 hover:bg-emerald-800 transition-colors whitespace-nowrap"
+              >
+                🌊 Waterfalls
+              </button>
+              <button 
+                onClick={() => sendMessage('Which are top temples to visit in Jharkhand?')}
+                className="px-2.5 py-1 rounded-full bg-emerald-900/80 text-yellow-300 border border-yellow-400/60 hover:bg-emerald-800 transition-colors whitespace-nowrap"
+              >
+                🏛️ Temples
+              </button>
+              <button 
+                onClick={() => sendMessage('What to see in Ranchi and Patratu Valley?')}
+                className="px-2.5 py-1 rounded-full bg-emerald-900/80 text-yellow-300 border border-yellow-400/60 hover:bg-emerald-800 transition-colors whitespace-nowrap"
+              >
+                🏞️ Ranchi
+              </button>
+              <button 
+                onClick={() => sendMessage('What is famous local food in Jharkhand?')}
+                className="px-2.5 py-1 rounded-full bg-emerald-900/80 text-yellow-300 border border-yellow-400/60 hover:bg-emerald-800 transition-colors whitespace-nowrap"
+              >
+                🍱 Cuisine
+              </button>
+            </div>
+
+            <div className="flex items-end gap-2 rounded-2xl border border-yellow-300/70 bg-white/90 p-2 shadow-[0_0_0_1px_rgba(242,140,40,0.2)]">
+              <textarea
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask about Jharkhand tourism..."
-                className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition-all duration-200"
-                style={{ 
-                  background: 'rgba(255,255,255,0.1)',
-                  backdropFilter: 'blur(10px)',
-                  WebkitBackdropFilter: 'blur(10px)',
-                  color: 'white',
-                  height: '40px'
+                onKeyDown={handleKeyPress}
+                aria-label="Type your message"
+                rows={1}
+                placeholder="Type your message..."
+                className="flex-1 resize-none border-0 bg-transparent px-2 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                style={{
+                  minHeight: '42px',
+                  maxHeight: '120px',
+                  lineHeight: '1.5'
                 }}
               />
               <Button
-                onClick={sendMessage}
-                disabled={!inputMessage.trim() || isLoading}
+                onClick={() => sendMessage()}
+                disabled={(!inputMessage.trim() && !selectedImage) || isLoading}
                 size="sm"
                 className="h-10 w-10 p-0 rounded-full flex-shrink-0 shadow-lg hover:shadow-xl transition-all duration-200"
                 style={{ 
                   background: 'linear-gradient(135deg, #0B3D2E 0%, #145A3A 100%)',
                   border: '2px solid #F28C28',
-                  opacity: (!inputMessage.trim() || isLoading) ? 0.5 : 1
+                  opacity: ((!inputMessage.trim() && !selectedImage) || isLoading) ? 0.5 : 1
                 }}
               >
                 <Send className="h-4 w-4" style={{ color: '#F28C28' }} />

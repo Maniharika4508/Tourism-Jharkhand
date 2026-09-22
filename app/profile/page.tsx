@@ -76,7 +76,8 @@ export default function ProfilePage() {
     setIsSaving(true)
     
     try {
-      const response = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/auth/profile', {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const response = await fetch(baseUrl + '/api/auth/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

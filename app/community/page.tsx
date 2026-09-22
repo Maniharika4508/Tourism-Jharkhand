@@ -83,7 +83,7 @@ export default function CommunityPage() {
       beneficiaries: 125,
       progress: 92,
       status: "Completing",
-      image: "/tribal-homestay-jharkhand-authentic-experience.jpg",
+      image: "/netarhat-hill-station-sunrise-jharkhand.jpg",
       category: "Tourism",
       startDate: "Mar 2023",
       budget: "₹12.3L",

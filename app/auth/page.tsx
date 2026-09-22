@@ -115,7 +115,8 @@ export default function AuthPage() {
           phone: formData.phone
         }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${endpoint}`, {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const response = await fetch(`${baseUrl}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

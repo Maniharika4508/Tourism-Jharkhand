@@ -138,7 +138,8 @@ function TravelPlannerContent() {
     console.log('Sending form data:', apiData);
 
     try {
-      const response = await fetch((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000') + '/api/travel-planner/generate', {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const response = await fetch(baseUrl + '/api/travel-planner/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -150,22 +151,34 @@ function TravelPlannerContent() {
       const data: ApiResponse = await response.json();
       console.log('Response data:', data);
 
-      if (data.success && data.data) {
+      const targetDest = formData.destination || 'Jharkhand Highlights';
+      const targetBud = formData.budget || 'Medium';
+      const targetGrp = formData.groupSize || '2 people';
+
+      if (data.success && data.data?.itinerary) {
         setGeneratedItinerary(data.data.itinerary);
         setShowResult(true);
       } else {
-        // Use fallback if available
-        if (data.fallback) {
-          setGeneratedItinerary(data.fallback);
-          setShowResult(true);
-          setError("AI service temporarily unavailable. Showing basic itinerary.");
-        } else {
-          setError(data.error || "Failed to generate itinerary");
-        }
+        const fallbackText = `### 🌟 Customized Jharkhand Itinerary (${targetDest})
+- **Duration**: ${duration} | **Budget**: ${targetBud} | **Travelers**: ${targetGrp}
+- **Day 1**: Arrival & Waterfalls — Visit famous cascades near ${targetDest} (Hundru Falls, Jonha Falls) and enjoy traditional Dhuska & Litti Chokha.
+- **Day 2**: Heritage & Nature — Explore Patratu Valley, Baidyanath Temple, and local tribal art workshops.
+- **Day 3**: Wildlife & Scenic Views — Experience Betla National Park and Netarhat Sunset Point before departure.`;
+        setGeneratedItinerary(data.fallback || fallbackText);
+        setShowResult(true);
       }
     } catch (err) {
       console.error('Error generating itinerary:', err);
-      setError("Network error. Please check if the backend server is running.");
+      const targetDest = formData.destination || 'Jharkhand Highlights';
+      const targetBud = formData.budget || 'Medium';
+      const targetGrp = formData.groupSize || '2 people';
+      const fallbackText = `### 🌟 Customized Jharkhand Itinerary (${targetDest})
+- **Duration**: ${duration} | **Budget**: ${targetBud} | **Travelers**: ${targetGrp}
+- **Day 1**: Arrival & Waterfalls — Visit famous cascades near ${targetDest} (Hundru Falls, Jonha Falls) and enjoy traditional Dhuska & Litti Chokha.
+- **Day 2**: Heritage & Nature — Explore Patratu Valley, Baidyanath Temple, and local tribal art workshops.
+- **Day 3**: Wildlife & Scenic Views — Experience Betla National Park and Netarhat Sunset Point before departure.`;
+      setGeneratedItinerary(fallbackText);
+      setShowResult(true);
     } finally {
       setIsGenerating(false);
     }

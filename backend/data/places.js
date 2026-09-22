@@ -20,7 +20,7 @@ const jharkhandTouristPlaces = [
     { district: "Giridih", name: "Usri Falls", lat: 24.2266, lon: 86.3064 , streetView: "https://www.google.com/maps/embed?pb=!4v1757768585590!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJRGU1dGJKY3c.!2m2!1d24.09762036871997!2d86.36963762798806!3f126.12318327439498!4f-3.1521915494395927!5f0.4000000000000002"},
   
     // 6. Deoghar
-    { district: "Deoghar", name: "Baidyanath Temple", lat: 24.4913, lon: 86.6990 , streetView: "https://www.google.com/maps/embed?pb=!4v1757754223598!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJQ2g0dV9FV2c.!2m2!1d24.49259314266196!2d86.7002825890493!3f227.4834770224565!4f15.483188871167656!5f0.4000000000000002"},
+    { district: "Deoghar", name: "Baidyanath Temple", lat: 24.4913, lon: 86.6990 , streetView: "https://www.google.com/maps/embed?pb=!4v1757754223598!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJQ2g0dV_FV2c.!2m2!1d24.49259314266196!2d86.7002825890493!3f227.4834770224565!4f15.483188871167656!5f0.4000000000000002"},
     { district: "Deoghar", name: "Trikut Hill", lat: 24.4817, lon: 86.8510 , streetView: "https://www.google.com/maps/embed?pb=!4v1757754366714!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJRHE4OFdMUVE.!2m2!1d24.48337361145164!2d86.8484039072386!3f56.62!4f2.9200000000000017!5f0.4000000000000002"},
     
     // 7. Dumka
@@ -84,9 +84,7 @@ const jharkhandTouristPlaces = [
   
     // 24. Garhwa
     { district: "Garhwa", name: "Sukhaldari Falls", lat: 24.1480, lon: 83.6885, streetView: "https://www.google.com/maps/embed?pb=!4v1757772608633!6m8!1m7!1sCAoSFkNJSE0wb2dLRUlDQWdJREMyN0RHQXc.!2m2!1d24.08515251232813!2d83.4255865354589!3f80.10317538012053!4f2.5119603438450895!5f0.4000000000000002" },
-    { district: "Garhwa", name: "Nagaruntari Temple", lat: 24.3032, lon: 83.4534, streetView: "https://www.google.com/maps/embed?pb=!4v1757772649244!6m8!1m7!1sTMO8B0wDE9RlKqy6LsTHlQ!2m2!1d24.27873047810114!2d83.493216156921!3f67.8182361028536!4f-1.5594752431491656!5f0.4000000000000002" },
-  ];
-  
-  module.exports = jharkhandTouristPlaces;
-  module.exports.default = jharkhandTouristPlaces;
-  
+    { district: "Garhwa", name: "Nagaruntari Temple", lat: 24.3032, lon: 83.4534, streetView: "https://www.google.com/maps/embed?pb=!4v1757772649244!6m8!1m7!1sTMO8B0wDE9RlKqy6LsTHlQ!2m2!1d24.27873047810114!2d83.493216156921!3f67.8182361028536!4f-1.5594752431491656!5f0.4000000000000002" }
+];
+
+module.exports = jharkhandTouristPlaces;

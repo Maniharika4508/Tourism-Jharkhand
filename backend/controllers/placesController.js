@@ -80,19 +80,16 @@ const uploadPlacesFile = async (req, res) => {
   }
 };
 
-// Get all places data
 const getAllPlaces = async (req, res) => {
   try {
     const { district, search, limit = 50, page = 1 } = req.query;
     
     let query = { isActive: true };
     
-    // Filter by district
     if (district) {
       query.district = new RegExp(district, 'i');
     }
     
-    // Search functionality
     if (search) {
       query.$or = [
         { name: new RegExp(search, 'i') },
@@ -107,24 +104,37 @@ const getAllPlaces = async (req, res) => {
 
     const total = await Place.countDocuments(query);
 
-    res.status(200).json({
-      success: true,
-      data: places,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        pages: Math.ceil(total / parseInt(limit))
-      }
-    });
+    if (places && places.length > 0) {
+      return res.status(200).json({
+        success: true,
+        data: places,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit))
+        }
+      });
+    }
 
+    throw new Error('No DB places found, using static fallback');
   } catch (error) {
-    console.error('Get places error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error fetching places',
-      error: error.message
-    });
+    console.warn('DB places fetch failed, returning static fallback:', error.message);
+    try {
+      const fallbackPlaces = require('../data/places');
+      return res.status(200).json({
+        success: true,
+        data: fallbackPlaces,
+        fallback: true,
+        pagination: { page: 1, limit: fallbackPlaces.length, total: fallbackPlaces.length, pages: 1 }
+      });
+    } catch (fallbackErr) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error fetching places',
+        error: error.message
+      });
+    }
   }
 };
 

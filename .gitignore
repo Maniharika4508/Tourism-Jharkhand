@@ -133,3 +133,5 @@ backend/npm-debug.log
 .cache/
 .eslintcache
 .stylelintcache
+.vercel
+.env*

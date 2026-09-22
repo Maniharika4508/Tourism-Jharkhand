@@ -5,7 +5,7 @@ const vendors = [
   {
     id: "seller_1",
     name: "Kumari Devi",
-    profileImage: "/vendor-kumari-devi.jpg",
+    profileImage: "/placeholder-user.jpg",
     location: "Hazaribagh",
     category: "Handicrafts",
     specialization: "Sohrai & Khovar Art",
@@ -40,7 +40,7 @@ const vendors = [
   {
     id: "seller_2",
     name: "Birsa Munda Family",
-    profileImage: "/vendor-birsa-family.jpg",
+    profileImage: "/placeholder-user.jpg",
     location: "Netarhat",
     category: "Homestays",
     specialization: "Cultural Homestay Experience",
@@ -75,7 +75,7 @@ const vendors = [
   {
     id: "seller_3",
     name: "Raman Kumar",
-    profileImage: "/vendor-raman-kumar.jpg",
+    profileImage: "/placeholder-user.jpg",
     location: "Ranchi",
     category: "Experiences",
     specialization: "Dokra Metal Craft Workshops",
