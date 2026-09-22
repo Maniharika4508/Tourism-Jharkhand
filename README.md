@@ -1,795 +1,696 @@
 # 🌿 Jharkhand Tourism
 
-### Development of a Smart Digital Platform to Promote Eco & Cultural Tourism in Jharkhand
+## Development of a Smart Digital Platform to Promote Eco & Cultural Tourism in Jharkhand
 
-> **Discover Jharkhand – Where Nature Meets Culture**
-
-Jharkhand Tourism is a **smart digital tourism platform** developed to promote the natural beauty, eco-tourism, cultural heritage, tribal experiences, local food, handicrafts, festivals, and tourist destinations of Jharkhand.
-
-The platform combines **modern web technologies, AI-powered travel assistance, multilingual conversational support, personalized trip planning, digital tourism information, maps, weather services, and online payment capabilities** to create a convenient and engaging experience for tourists.
+**Discover Jharkhand – Where Nature Meets Culture**
 
 ---
 
-## 📌 Project Overview
+## 🌟 About the Project
 
-Jharkhand is known for its waterfalls, forests, wildlife, tribal heritage, cultural traditions, temples, handicrafts, festivals, and natural landscapes.
+**Jharkhand Tourism** is a smart digital tourism platform developed to bring the diverse tourism potential of Jharkhand into a single, engaging digital experience.
 
-However, tourists may need to use multiple sources to discover destinations, understand local experiences, plan an itinerary, and obtain travel assistance.
+Jharkhand is known for its **waterfalls, forests, wildlife, hills, temples, tribal heritage, traditional cuisine, handicrafts, and vibrant festivals**. However, discovering this information and planning a complete trip can often require multiple platforms.
 
-This project provides a **single digital tourism platform** where users can:
+This project addresses that gap by providing a centralized platform where users can **discover destinations, learn about local culture, interact with an AI tourism assistant, and generate personalized travel plans.**
 
-* Explore Jharkhand's tourist destinations.
-* Discover waterfalls, wildlife, nature, and eco-tourism locations.
-* Learn about tribal culture and local traditions.
-* Explore local food, handicrafts, and festivals.
-* Get personalized travel plans using AI.
-* Ask tourism-related questions through an AI chatbot.
-* Interact with the chatbot in multiple languages.
-* Access destination information through a user-friendly interface.
-* Use digital travel and booking/payment features.
+The platform combines **modern web technologies, artificial intelligence, tourism information, and digital services** to create a foundation for a future smart tourism ecosystem.
 
 ---
 
 # 🎯 Objectives
 
-The major objectives of the project are:
-
-1. **Promote Eco-Tourism**
-
-   * Highlight waterfalls, forests, wildlife, hills, and nature-based destinations.
-
-2. **Promote Cultural Tourism**
-
-   * Showcase tribal culture, traditions, festivals, handicrafts, food, and local experiences.
-
-3. **Provide Centralized Tourism Information**
-
-   * Bring important destination and cultural information together in one platform.
-
-4. **Enable Personalized Travel Planning**
-
-   * Generate travel plans based on duration, interests, budget, and preferred activities.
-
-5. **Provide AI-Based Tourist Assistance**
-
-   * Allow users to ask questions and receive tourism-related information through an AI chatbot.
-
-6. **Support Multilingual Interaction**
-
-   * Enable tourists to interact using different languages and language styles.
-
-7. **Improve Tourist Experience**
-
-   * Combine tourism information with modern digital technologies.
+* 🌱 Promote **eco-tourism and sustainable tourism** in Jharkhand.
+* 🏛️ Showcase the state's **cultural and tribal heritage**.
+* 🗺️ Provide centralized information about tourist destinations.
+* 🤖 Provide intelligent assistance through an **AI tourism chatbot**.
+* 🧭 Generate personalized travel plans using AI.
+* 🍛 Promote local food, handicrafts, festivals, and cultural experiences.
+* 💡 Create a foundation for integrating advanced tourism services in the future.
 
 ---
 
-# ⭐ Key Features
+# ✨ Key Features
 
-## 🤖 1. AI Tourism Chatbot
+## 🗺️ 1. Smart Destination Explorer
 
-The platform includes an AI-powered tourism chatbot designed specifically for Jharkhand tourism.
+Users can explore different categories of tourist attractions across Jharkhand.
 
-### Capabilities
+### Includes:
 
-* Answers tourism-related questions.
-* Provides destination information.
-* Explains waterfalls, wildlife, culture, food, festivals, and handicrafts.
-* Supports follow-up questions using conversation context.
-* Detects the user's language.
-* Provides multilingual responses.
-* Uses verified project knowledge to reduce unsupported information.
-* Avoids inventing unavailable tourism details.
+* 🌊 Waterfalls
+* ⛰️ Hills & landscapes
+* 🐘 Wildlife & nature
+* 🛕 Temples & spiritual destinations
+* 🌳 Eco-tourism locations
+* 🏛️ Cultural attractions
+* 🧑‍🤝‍🧑 Tribal experiences
+* 🍛 Local food
+* 🧵 Handicrafts
+* 🎉 Festivals
 
-### Supported Languages
-
-* 🇬🇧 English
-* 🇮🇳 Telugu
-* 🔤 Roman Telugu / Telugu-English
-* 🇮🇳 Hindi
-* 🔤 Hinglish
-* 🌐 Mixed-language conversations
-
-### Example
-
-```text
-User:
-Tell me about Dassam Falls.
-
-Chatbot:
-Provides available verified information about Dassam Falls.
-
-User:
-Where is it located?
-
-Chatbot:
-Understands that "it" refers to Dassam Falls
-and continues the conversation using context.
-```
+The platform presents destination information in an organized and user-friendly way.
 
 ---
 
-# ✈️ 2. AI Trip Planner
+# 🤖 2. AI Tourism Chatbot
 
-The AI Trip Planner helps users create personalized travel itineraries.
+The platform includes an **AI-powered tourism chatbot** that acts as a digital travel assistant.
 
-Users can provide:
+Users can ask questions about:
 
-* Travel duration
-* Budget
-* Interests
-* Preferred activities
-* Destination preferences
-
-The system uses these preferences to generate a suitable travel plan.
-
-### Example
-
-```text
-Duration: 3 Days
-Interest: Waterfalls + Nature
-Budget: Moderate
-Activity: Sightseeing
-```
-
-The system can generate a structured itinerary based on the selected preferences.
-
----
-
-# 🏞️ 3. Tourist Destination Explorer
-
-The platform provides information about important tourism destinations in Jharkhand.
-
-### Featured Destinations
-
-* Dassam Falls
-* Hundru Falls
-* Betla National Park
-* Netarhat
-* Dalma
-* Baidyanath Temple
-* Trikut Hill
-* Parasnath Hill
-* Canary Hill
-* Moti Jharna
-
-The destination section is designed to help users discover places and understand their tourism significance.
-
----
-
-# 💧 4. Waterfall Tourism
-
-Jharkhand is known for its natural waterfalls.
-
-The platform highlights destinations such as:
-
-* Dassam Falls
-* Hundru Falls
-* Other notable waterfall destinations
-
-The system provides available destination information while avoiding unsupported claims about current fees, timings, access conditions, or other changing details.
-
----
-
-# 🌳 5. Eco-Tourism
-
-The platform promotes responsible and nature-based tourism.
-
-### Eco-Tourism Areas
-
-* Forest destinations
+* Tourist destinations
 * Waterfalls
+* Temples
 * Wildlife
-* Hills
-* Nature experiences
-* Responsible tourism
+* Local food
+* Culture
+* Festivals
+* Travel planning
+* General tourism information
 
-The platform encourages tourists to explore natural destinations while supporting sustainable tourism practices.
+### 🌐 Multilingual Conversation
+
+The chatbot supports interaction across multiple language styles, including:
+
+* English
+* Telugu
+* Roman Telugu / Telugu-English
+* Hindi
+* Hinglish
+
+It can also maintain context during follow-up questions, allowing users to continue a conversation naturally.
+
+### 🧠 Responsible AI
+
+The chatbot is designed around the project's available tourism knowledge so that it can provide relevant information without unnecessarily inventing unsupported details.
 
 ---
 
-# 🪶 6. Cultural Tourism
+# 🧭 3. AI Travel Planner
 
-The platform highlights Jharkhand's cultural heritage.
+Planning a trip manually can be time-consuming.
 
-### Cultural Categories
+The **AI Travel Planner** generates a personalized itinerary according to user preferences.
 
-* Tribal culture
-* Traditional lifestyles
-* Local food
+### Users can provide:
+
+| Preference       | Example                     |
+| ---------------- | --------------------------- |
+| 📍 Destination   | Ranchi                      |
+| 📅 Duration      | 3 Days                      |
+| 🌿 Interests     | Nature, Culture, Waterfalls |
+| 💰 Budget        | Medium                      |
+| 👥 Group Size    | 2–4 People                  |
+| 🏨 Accommodation | Hotels                      |
+
+The system uses these preferences to generate a structured travel plan.
+
+### Example Flow
+
+```text
+User Preferences
+       ↓
+AI Travel Planner
+       ↓
+Destination & Activity Analysis
+       ↓
+Personalized Itinerary
+       ↓
+User-Friendly Travel Plan
+```
+
+---
+
+# 🌱 4. Eco & Cultural Tourism
+
+A major focus of the platform is to promote the lesser-known tourism potential of Jharkhand.
+
+The platform highlights:
+
+### 🌳 Eco Tourism
+
+* Natural landscapes
+* Waterfalls
+* Forest destinations
+* Wildlife areas
+* Sustainable travel awareness
+
+### 🏛️ Cultural Tourism
+
+* Tribal heritage
+* Traditional practices
+* Local cuisine
 * Handicrafts
 * Festivals
 * Cultural experiences
-* Local communities
 
-This helps visitors understand Jharkhand beyond its tourist destinations.
-
----
-
-# 🍲 7. Local Food
-
-The platform provides information about local food and traditional culinary experiences of Jharkhand.
-
-Users can explore the relationship between local cuisine, culture, and tourism.
+This approach helps present tourism not only as sightseeing but also as an opportunity to understand and support local culture and communities.
 
 ---
 
-# 🧵 8. Handicrafts
+# 📍 5. Maps & Location Support
 
-The platform promotes traditional handicrafts and local art.
+The platform provides location-oriented tourism information to help users understand where destinations are situated and explore them more conveniently.
 
-This feature helps create awareness about local craftsmanship and supports the idea of community-based tourism.
-
----
-
-# 🎉 9. Festivals & Cultural Experiences
-
-Users can explore information about:
-
-* Traditional festivals
-* Tribal celebrations
-* Local cultural activities
-* Traditional practices
-* Community experiences
+This creates a foundation for future route planning and travel-service integrations.
 
 ---
 
-# 🗺️ 10. Maps & Location Support
+# 💳 6. Digital Payment Support
 
-The platform can integrate digital map services to help users understand destination locations and plan their travel.
+The project includes **Razorpay-based payment support** for applicable digital payment flows.
 
-Maps can support:
+The payment layer provides a foundation for future expansion into tourism-related online services.
 
-* Destination discovery
-* Location visualization
-* Travel planning
-* Route exploration
+> Payment features depend on the configured Razorpay environment and credentials.
 
 ---
 
-# 🌦️ 11. Weather Information
+# 📱 7. Responsive Web Experience
 
-Weather information can help tourists understand environmental conditions while planning their trip.
+The platform is designed to provide a smooth experience across:
 
-This can support better travel planning for outdoor destinations and nature-based activities.
+* 💻 Desktop
+* 📱 Mobile
+* 📲 Tablet
 
----
-
-# 💳 12. Online Payment Integration
-
-The platform includes a digital payment flow using **Razorpay**.
-
-The payment system can support tourism-related booking or service transactions.
-
-### Payment Flow
-
-```text
-User
-  ↓
-Select Service / Booking
-  ↓
-Create Payment Order
-  ↓
-Razorpay Checkout
-  ↓
-Payment Processing
-  ↓
-Payment Verification
-  ↓
-Booking / Transaction Confirmation
-```
-
-> Payment credentials and secret API keys must be stored securely using environment variables and must never be committed to GitHub.
+The interface focuses on visual destination discovery and simple navigation.
 
 ---
 
-# 🔐 13. Secure Configuration
+# 🧠 Technology & Architecture
 
-The application uses environment variables for sensitive configuration.
+## 🛠️ Technology Stack
 
-Examples include:
+### Frontend
 
-* API keys
-* Database credentials
-* AI service credentials
-* Payment credentials
-* Backend configuration
+* **Next.js**
+* **React**
+* **JavaScript**
+* **HTML**
+* **CSS**
 
-Sensitive `.env` files are excluded from Git using `.gitignore`.
+### Backend
+
+* **Node.js**
+* **Express.js**
+* **REST APIs**
+
+### Database
+
+* **MongoDB Atlas**
+
+### Artificial Intelligence
+
+* **Groq API**
+* AI Tourism Chatbot
+* AI Travel Planner
+
+### Payment
+
+* **Razorpay**
+
+### Development
+
+* **Git**
+* **GitHub**
+* **VS Code**
+* **npm**
 
 ---
 
 # 🏗️ System Architecture
 
-The application follows a **frontend–backend–database–AI service architecture**.
-
 ```text
-                    ┌──────────────────────┐
-                    │       USER           │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │   Next.js / React    │
-                    │      Frontend        │
-                    └──────────┬───────────┘
-                               │
-                ┌──────────────┼──────────────┐
-                │              │              │
-                ▼              ▼              ▼
-        ┌──────────────┐ ┌────────────┐ ┌──────────────┐
-        │ AI Chatbot   │ │ Trip       │ │ Tourism      │
-        │ Interface    │ │ Planner    │ │ Features     │
-        └──────┬───────┘ └─────┬──────┘ └──────────────┘
-               │                │
-               └────────┬───────┘
-                        ▼
-              ┌─────────────────────┐
-              │   Node.js /         │
-              │   Express Backend   │
-              └─────────┬───────────┘
-                        │
-             ┌──────────┼───────────┐
-             │          │           │
-             ▼          ▼           ▼
-      ┌──────────┐ ┌──────────┐ ┌─────────────┐
-      │ MongoDB  │ │ Groq AI  │ │ Razorpay    │
-      │ Database │ │ Service  │ │ Payments    │
-      └──────────┘ └──────────┘ └─────────────┘
+                         ┌───────────────────┐
+                         │       USER        │
+                         └─────────┬─────────┘
+                                   │
+                                   ▼
+                    ┌──────────────────────────┐
+                    │   JHARKHAND TOURISM      │
+                    │      WEB PLATFORM        │
+                    └────────────┬─────────────┘
+                                 │
+                                 ▼
+                    ┌──────────────────────────┐
+                    │    NEXT.JS / REACT       │
+                    │       FRONTEND           │
+                    └────────────┬─────────────┘
+                                 │
+                                 ▼
+                    ┌──────────────────────────┐
+                    │    NODE.JS + EXPRESS      │
+                    │       BACKEND             │
+                    └──────┬────────┬───────────┘
+                           │        │
+              ┌────────────┘        └─────────────┐
+              ▼                                   ▼
+     ┌─────────────────┐                 ┌─────────────────┐
+     │  MONGODB ATLAS  │                 │     GROQ AI     │
+     │  Tourism Data   │                 │ Chatbot/Planner │
+     └─────────────────┘                 └─────────────────┘
+                           │
+                           ▼
+                    ┌─────────────────┐
+                    │    RAZORPAY     │
+                    │ Payment Support │
+                    └─────────────────┘
 ```
 
 ---
 
-# 🔄 Application Flow
+# 🔄 How the Platform Works
 
 ```text
-User
-  │
-  ▼
-Web Interface
-  │
-  ├── Explore Destinations
-  │
-  ├── Explore Culture
-  │
-  ├── AI Trip Planner
-  │
-  ├── Tourism Chatbot
-  │
-  ├── Maps / Weather
-  │
-  └── Booking / Payment
-          │
-          ▼
-      Backend APIs
-          │
-     ┌────┼─────┐
-     ▼    ▼     ▼
- MongoDB Groq Razorpay
+                    USER
+                      │
+                      ▼
+              Explore Website
+                      │
+        ┌─────────────┼─────────────┐
+        ▼             ▼             ▼
+   Destinations    AI Chatbot   Travel Planner
+        │             │             │
+        ▼             ▼             ▼
+   Tourism Info    AI Answers   Preferences
+                                      │
+                                      ▼
+                              Personalized Plan
+                                      │
+                                      ▼
+                              Explore Jharkhand
 ```
 
 ---
 
-# 🧠 AI Architecture
+# 🌍 Tourism Categories
 
-The AI layer uses **Groq** for conversational AI functionality.
+The platform brings multiple aspects of Jharkhand tourism together:
 
-### AI Chatbot Flow
+**Nature → Wildlife → Waterfalls → Culture → Tribal Heritage → Food → Handicrafts → Festivals → Travel Planning**
 
-```text
-User Question
-      ↓
-Language Detection
-      ↓
-Conversation Context
-      ↓
-Tourism Knowledge
-      ↓
-Groq AI Model
-      ↓
-Response Validation
-      ↓
-Language-Appropriate Response
-      ↓
-User
-```
-
-The chatbot is designed to provide known tourism information while avoiding unsupported factual claims.
+This makes the platform useful not only for destination discovery but also as a foundation for a broader tourism ecosystem.
 
 ---
 
-# 🌐 Multilingual Chatbot Architecture
+# 🚀 Future Scope
+
+The current version establishes the core tourism and AI experience. The platform can be extended significantly in future.
+
+## 🥽 1. AR / VR Tourism
+
+Future versions can introduce immersive destination experiences.
+
+Possible features:
+
+* 360° virtual tours
+* VR previews of tourist destinations
+* AR-based destination information
+* Virtual exploration of monuments and cultural locations
+* Interactive heritage experiences
+
+Users could experience a destination digitally before visiting it physically.
+
+---
+
+## 🏨 2. Hotel & Accommodation Booking
+
+A future version can integrate accommodation services such as:
+
+* Hotels
+* Resorts
+* Homestays
+* Eco-stays
+* Room availability
+* Price comparison
+* Online reservations
+* Accommodation recommendations
+
+The AI Travel Planner could eventually consider accommodation as part of the complete trip plan.
+
+---
+
+## 🍽️ 3. Restaurant Discovery & Booking
+
+The platform can be expanded to connect tourists with local food and restaurants.
+
+Future features may include:
+
+* Restaurant discovery
+* Local cuisine recommendations
+* Menus
+* Ratings & reviews
+* Location-based restaurant search
+* Table reservation
+* Food recommendations based on user preferences
+
+This can also help promote authentic local cuisine.
+
+---
+
+## 🎟️ 4. Attractions & Activity Booking
+
+Future versions could provide booking support for:
+
+* Tourist attractions
+* Adventure activities
+* Guided tours
+* Cultural experiences
+* Events
+* Festivals
+
+Users could eventually manage major parts of their trip from one platform.
+
+---
+
+## 🚗 5. Transportation Integration
+
+The platform can later integrate:
+
+* Cab services
+* Car rentals
+* Local transportation
+* Intercity travel
+* Route planning
+* Pickup and drop services
+
+This would help create an end-to-end travel experience.
+
+---
+
+## 🧑‍🤝‍🧑 6. Local Guide & Experience Platform
+
+Future development can provide a way to discover and connect with verified local guides.
+
+Possible features:
+
+* Local guide profiles
+* Guide availability
+* Cultural tours
+* Nature tours
+* Tribal experiences
+* Guide booking
+
+This can create additional opportunities for local communities.
+
+---
+
+## 🧠 7. Advanced AI Recommendations
+
+The AI layer can evolve beyond basic itinerary generation.
+
+Future AI capabilities may include personalized recommendations for:
+
+* Destinations
+* Hotels
+* Restaurants
+* Activities
+* Travel routes
+* Cultural experiences
+
+The recommendation engine could learn from user preferences and previous interactions.
+
+---
+
+## 🗣️ 8. Voice-Based Tourism Assistant
+
+A future version could support:
+
+**Voice → AI → Tourism Information**
+
+Possible capabilities:
+
+* Voice questions
+* Speech-to-text
+* Text-to-speech
+* Voice-based itinerary planning
+* Hands-free travel assistance
+
+---
+
+## 📊 9. Smart Tourism Analytics
+
+Future analytics can help identify:
+
+* Popular destinations
+* Seasonal tourism patterns
+* Visitor interests
+* Destination demand
+* Travel trends
+* Potential crowd levels
+
+Such insights could support better tourism planning and resource management.
+
+---
+
+## 🌱 10. Sustainable Tourism Intelligence
+
+Future versions can focus more strongly on sustainable tourism by providing:
+
+* Eco-friendly travel suggestions
+* Responsible tourism guidelines
+* Local community experiences
+* Lesser-known destination recommendations
+* Support for local artisans
+* Sustainable accommodation discovery
+
+---
+
+# 🔮 Future Vision
+
+The long-term vision is to evolve Jharkhand Tourism from an information platform into a **complete smart tourism ecosystem**.
 
 ```text
-User Input
-    ↓
-Language Detection
-    ↓
-┌─────────────────────────────┐
-│ English                     │
-│ Telugu                      │
-│ Roman Telugu                │
-│ Hindi                       │
-│ Hinglish                    │
-│ Mixed Language              │
-└──────────────┬──────────────┘
-               ↓
-       Tourism Context
-               ↓
-          Groq AI
-               ↓
-     Language Validation
-               ↓
-      Final Chat Response
+                 DISCOVER
+                    ↓
+                 EXPLORE
+                    ↓
+                   PLAN
+                    ↓
+                  BOOK
+                    ↓
+                EXPERIENCE
+                    ↓
+              SHARE / REVIEW
+```
+
+A future ecosystem could connect:
+
+```text
+┌──────────────┐
+│ Destinations │
+└──────┬───────┘
+       │
+       ├── Hotels & Resorts
+       ├── Restaurants
+       ├── Transport
+       ├── Local Guides
+       ├── Activities
+       ├── Events
+       ├── AR / VR Experiences
+       └── AI Recommendations
 ```
 
 ---
 
-# 🛠️ Technology Stack
+# 🎯 Impact
 
-## Frontend
+The project aims to contribute to Jharkhand tourism by:
 
-| Technology | Purpose                       |
-| ---------- | ----------------------------- |
-| Next.js    | Web application framework     |
-| React      | UI development                |
-| JavaScript | Application logic             |
-| HTML       | Page structure                |
-| CSS        | Styling and responsive design |
+* 🌿 Increasing awareness of natural attractions.
+* 🏛️ Promoting cultural and tribal heritage.
+* 🤖 Making travel assistance more accessible through AI.
+* 🧭 Simplifying travel planning.
+* 🍛 Promoting local food and handicrafts.
+* 🌱 Encouraging responsible and sustainable tourism.
+* 🤝 Creating future opportunities for local tourism businesses and communities.
 
-## Backend
+---
 
-| Technology | Purpose                        |
-| ---------- | ------------------------------ |
-| Node.js    | Backend runtime                |
-| Express.js | REST API development           |
-| REST APIs  | Frontend-backend communication |
+# 🔐 Security & Responsible Development
 
-## Database
+The application is designed with separation between frontend and backend services.
 
-| Technology | Purpose                      |
-| ---------- | ---------------------------- |
-| MongoDB    | Tourism and application data |
+Sensitive configuration such as:
 
-## AI
+* API keys
+* Database credentials
+* Payment secrets
+* Authentication secrets
 
-| Technology             | Purpose                              |
-| ---------------------- | ------------------------------------ |
-| Groq                   | AI-powered chatbot                   |
-| Tourism Knowledge Base | Verified project tourism information |
-| AI Trip Planner        | Personalized itinerary generation    |
+should be maintained through environment variables rather than being exposed in source code.
 
-## Payment
+> **Never commit `.env` files or API credentials to GitHub.**
 
-| Technology | Purpose                    |
-| ---------- | -------------------------- |
-| Razorpay   | Digital payment processing |
+---
 
-## Development & Deployment
+# 📌 Current Version vs Future Scope
 
-| Tool    | Purpose                |
-| ------- | ---------------------- |
-| Git     | Version control        |
-| GitHub  | Source code management |
-| VS Code | Development            |
-| Vercel  | Frontend deployment    |
-| Railway | Backend deployment     |
+| Area                      | Current Version | Future Enhancement               |
+| ------------------------- | --------------- | -------------------------------- |
+| Destination Information   | ✅               | Advanced discovery               |
+| AI Tourism Chatbot        | ✅               | Voice assistant                  |
+| AI Trip Planner           | ✅               | Advanced recommendations         |
+| Eco Tourism               | ✅               | Sustainability intelligence      |
+| Cultural Tourism          | ✅               | Interactive cultural experiences |
+| Maps / Location           | ✅               | Advanced route planning          |
+| Payment Support           | ✅               | Complete tourism booking         |
+| Hotel Booking             | —               | 🔮 Planned                       |
+| Restaurant Booking        | —               | 🔮 Planned                       |
+| Transport Booking         | —               | 🔮 Planned                       |
+| Local Guide Booking       | —               | 🔮 Planned                       |
+| AR / VR                   | —               | 🔮 Planned                       |
+| Activity / Ticket Booking | —               | 🔮 Planned                       |
+| Smart Tourism Analytics   | —               | 🔮 Planned                       |
 
 ---
 
 # 📂 Project Structure
 
 ```text
-Tourism-Jharkhand/
+SIH-Tourism/
 │
-├── app/                         # Next.js application
-│
-├── components/                 # Reusable React components
-│   └── chatbot-widget.tsx      # AI chatbot interface
-│
-├── api/                        # API-related functionality
-│
-├── backend/                    # Express backend
-│   ├── data/                   # Backend tourism data
-│   ├── middleware/             # Backend middleware
-│   ├── routes/                 # API routes
-│   ├── server.js               # Backend entry point
-│   ├── Procfile                # Deployment configuration
-│   └── railway.json            # Railway configuration
-│
-├── data/
-│   └── chatbot-knowledge.json  # Tourism chatbot knowledge
-│
-├── db/
-│   └── places.js                # Tourism destination data
-│
-├── public/                     # Static assets
-│
-├── package.json                # Project dependencies
-├── package-lock.json           # Dependency lock file
-├── vercel.json                 # Vercel configuration
-├── .gitignore                  # Git ignored files
-└── README.md                   # Project documentation
+└── Tourism-Jharkhand/
+    │
+    ├── app/
+    ├── components/
+    ├── public/
+    ├── data/
+    ├── backend/
+    │   ├── routes/
+    │   ├── middleware/
+    │   ├── data/
+    │   └── server.js
+    │
+    ├── package.json
+    ├── vercel.json
+    └── README.md
 ```
+
+*The exact structure may vary as the project evolves.*
 
 ---
 
-# 🚀 Installation & Setup
+# ⚙️ Getting Started
 
 ## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Maniharika4508/Tourism-Jharkhand.git
-```
-
-## 2. Navigate to the Project
-
-```bash
 cd Tourism-Jharkhand
 ```
 
-## 3. Install Frontend Dependencies
+## 2. Install Frontend Dependencies
 
 ```bash
+npm install
+```
+
+## 3. Install Backend Dependencies
+
+```bash
+cd backend
 npm install
 ```
 
 ## 4. Configure Environment Variables
 
-Create:
+Create the required environment configuration using your own credentials.
 
-```text
-.env.local
-```
+Do **not** upload secret keys to GitHub.
 
-Add the required configuration values for the project.
-
-Do **not** commit secret keys or credentials to GitHub.
-
-## 5. Start the Frontend
+## 5. Start Backend
 
 ```bash
 npm run dev
 ```
 
-Frontend:
+## 6. Start Frontend
 
-```text
-http://localhost:3000
+From the project root:
+
+```bash
+npm run dev
 ```
 
-If port 3000 is already in use, Next.js may automatically use another available port.
+Then open the local development URL shown in the terminal.
 
 ---
 
-# 🔧 Backend Setup
+# 🌐 API Health Endpoints
 
-Open another terminal:
-
-```bash
-cd backend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the backend:
-
-```bash
-npm run dev
-```
-
-Backend:
-
-```text
-http://localhost:5000
-```
-
-### API Endpoints
+The backend provides health/status endpoints such as:
 
 ```text
 /api/health
-/api/docs
 /api/chatbot/health
 /api/travel-planner/health
 ```
 
----
-
-# 🔗 Frontend–Backend Communication
-
-The frontend communicates with the Express backend through REST APIs.
-
-```text
-Next.js Frontend
-       │
-       │ HTTP Requests
-       ▼
-Express Backend
-       │
-       ├── Chatbot
-       ├── Travel Planner
-       ├── Tourism Data
-       └── Other Services
-```
-
-The backend URL is configured using environment variables rather than hardcoding deployment-specific URLs.
+These endpoints can be used to verify backend availability after deployment.
 
 ---
 
-# 🧪 Testing
+# 🧪 AI Capabilities
 
-The project can be tested using:
-
-### Chatbot Tests
+### Tourism Chatbot
 
 ```text
-Tell me about Dassam Falls.
-
-Tell me about Hundru Falls.
-
-Plan a 3-day trip to Jharkhand.
-
-Tell me about Jharkhand tribal culture.
-
-झारखंड में घूमने के लिए अच्छी जगहें कौन सी हैं?
-
-దస్సం జలపాతం గురించి చెప్పు.
-
-dassam waterfalls gurinchi cheppu
+User Question
+      ↓
+Language Detection
+      ↓
+Tourism Knowledge
+      ↓
+Groq AI
+      ↓
+Context-Aware Response
 ```
 
-### Follow-up Test
+### AI Travel Planner
 
 ```text
-User:
-Tell me about Dassam Falls.
-
-User:
-Where is it located?
-
-User:
-What can I see there?
-```
-
-The chatbot should maintain the conversation context.
-
----
-
-# 🛡️ Responsible AI Approach
-
-The chatbot is designed with a focus on reliable tourism information.
-
-When the project does not contain verified information about details such as:
-
-* Current entry fees
-* Current opening hours
-* Exact distance
-* Current accessibility
-* Real-time facilities
-* Current weather
-
-the chatbot should avoid inventing information and clearly indicate when current verification is required.
-
-This helps reduce misleading tourism information.
-
----
-
-# 🌱 Sustainable Tourism Focus
-
-The project promotes responsible tourism by highlighting:
-
-* Eco-tourism
-* Natural destinations
-* Wildlife
-* Local communities
-* Tribal culture
-* Handicrafts
-* Local food
-* Cultural heritage
-
-The platform aims to encourage visitors to explore Jharkhand while increasing awareness of its natural and cultural resources.
-
----
-
-# 🚀 Deployment
-
-The project supports modern cloud deployment architecture.
-
-### Frontend
-
-```text
-Next.js
-   ↓
-Vercel
-```
-
-### Backend
-
-```text
-Node.js + Express
-   ↓
-Railway
-```
-
-### Database
-
-```text
-MongoDB
-```
-
-### AI
-
-```text
-Groq API
-```
-
-### Payment
-
-```text
-Razorpay
+User Preferences
+      ↓
+Destination Analysis
+      ↓
+Groq AI
+      ↓
+Personalized Itinerary
 ```
 
 ---
 
-# 🔮 Future Enhancements
+# 🏆 Project Highlights
 
-Possible future improvements include:
+### 🌿 Tourism
 
-* Advanced AI-based itinerary optimization.
-* Real-time destination availability.
-* Live weather and travel alerts.
-* Personalized destination recommendations.
-* AR/VR previews of tourist destinations.
-* Smart crowd prediction.
-* Enhanced local-business discovery.
-* Improved accessibility features.
-* More Indian language support.
-* Mobile application version.
-* Advanced analytics for tourism management.
+Eco-tourism + cultural tourism in one platform.
 
----
+### 🤖 Artificial Intelligence
 
-# 📊 Project Highlights
+AI chatbot + personalized AI trip planning.
 
-| Area                | Implementation                                  |
-| ------------------- | ----------------------------------------------- |
-| 🌿 Eco-Tourism      | Nature, waterfalls and wildlife destinations    |
-| 🪶 Cultural Tourism | Tribal culture, food, festivals and handicrafts |
-| 🤖 AI Chatbot       | Groq-powered tourism assistant                  |
-| 🌐 Multilingual     | English, Telugu, Hindi, Roman Telugu & Hinglish |
-| ✈️ Trip Planner     | AI-assisted personalized itineraries            |
-| 🗺️ Maps            | Digital destination/location support            |
-| 🌦️ Weather         | Travel planning support                         |
-| 💳 Payments         | Razorpay integration                            |
-| 🗄️ Database        | MongoDB                                         |
-| ⚙️ Backend          | Node.js + Express                               |
-| 💻 Frontend         | Next.js + React                                 |
-| 🚀 Deployment       | Vercel + Railway                                |
+### 🌐 Digital Experience
+
+Interactive destination discovery and travel information.
+
+### 🇮🇳 Local Focus
+
+Designed specifically to showcase the tourism potential of Jharkhand.
+
+### 🚀 Future Ready
+
+Architecture designed with scope for future booking, immersive, transportation, recommendation, and smart tourism services.
 
 ---
 
-# 👥 Project Team
+# 💡 Conclusion
 
-### Smart Tourism Platform for Jharkhand
+**Jharkhand Tourism** brings together the beauty, culture, and tourism potential of Jharkhand with modern digital technologies.
 
-Developed as an academic project focused on:
+The current platform provides **destination discovery, AI-powered assistance, personalized trip planning, cultural and eco-tourism information, location support, and digital payment capabilities**, while leaving a clear path for future additions such as **AR/VR experiences, hotel booking, restaurant booking, transportation, local guides, activity booking, voice assistance, and advanced AI recommendations.**
 
-**“Development of a Smart Digital Platform to Promote Eco & Cultural Tourism in Jharkhand.”**
-
----
-
-# 📜 Disclaimer
-
-This project is developed for **educational, demonstration, and tourism-platform development purposes**.
-
-Tourism information that can change over time, such as fees, timings, accessibility, weather, and travel conditions, should be verified from official or current local sources before making travel decisions.
-
----
-
-# 📄 License
-
-This project is developed for educational and academic purposes.
+> **Discover Jharkhand. Explore its Nature. Experience its Culture.**
